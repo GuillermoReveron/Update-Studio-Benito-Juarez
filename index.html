@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioGlow - Cosmética Urbana</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- ESTILO FLEEK (PÁGINA NEGRA Y MODERNA) --- */
+        :root {
+            --fondo: #0a0a0a;
+            --texto: #f4f4f4;
+            --acento: #ff3366; /* Un color vibrante para contrastar */
+            --gris: #222;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            margin: 0;
+            background-color: var(--fondo);
+            color: var(--texto);
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* Menú Lateral (Sidebar) */
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            background-color: var(--fondo);
+            border-right: 1px solid var(--gris);
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+
+        .sidebar h1 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-top: 0;
+        }
+
+        .historia {
+            font-size: 0.9rem;
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .contacto-info {
+            margin-top: auto;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gris);
+            font-size: 0.9rem;
+        }
+
+        .carrito-btn {
+            background-color: var(--texto);
+            color: var(--fondo);
+            border: none;
+            padding: 1rem;
+            font-family: 'Syncopate', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .carrito-btn:hover {
+            background-color: var(--acento);
+            color: var(--texto);
+        }
+
+        /* Contenido Principal */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem 4rem;
+            width: calc(100% - 280px);
+            box-sizing: border-box;
+        }
+
+        .titulo-seccion {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--texto);
+            padding-bottom: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Grilla de Productos */
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .card {
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Efecto Blanco y Negro */
+        .card img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.5s ease, transform 0.5s ease;
+        }
+
+        .card:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.02);
+        }
+
+        .card-info {
+            padding: 1.5rem 0;
+        }
+
+        .card-info h3 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.1rem;
+            margin: 0 0 0.5rem 0;
+            text-transform: uppercase;
+        }
+
+        .precio {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--acento);
+        }
+
+        .btn-add {
+            background-color: transparent;
+            color: var(--texto);
+            border: 1px solid var(--texto);
+            padding: 0.8rem;
+            width: 100%;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: var(--texto);
+            color: var(--fondo);
+        }
+
+        /* Modal del Carrito (El que se abre al costado) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; right: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: flex-end;
+        }
+
+        .modal-content {
+            background: var(--fondo);
+            width: 400px;
+            height: 100vh;
+            padding: 2rem;
+            box-sizing: border-box;
+            border-left: 1px solid var(--gris);
+            overflow-y: auto;
+            color: var(--texto);
+        }
+
+        .modal-content input, .modal-content select {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: var(--gris);
+            border: none;
+            color: var(--texto);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .btn-finalizar {
+            background: var(--acento);
+            color: white;
+            border: none;
+            padding: 1.2rem;
+            width: 100%;
+            font-family: 'Syncopate', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1rem;
+            text-transform: uppercase;
+        }
+
+        .datos-banco {
+            background: #1a1a1a;
+            padding: 1.5rem;
+            border: 1px dashed var(--gris);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            user-select: all;
+        }
+
+        /* Botón WhatsApp Flotante */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366;
+            border-radius: 50%;
+            width: 60px; height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        /* Diseño Responsivo (Celulares) */
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--gris);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1.5rem;
+            }
+            .modal-content { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h1>BioGlow</h1>
+        <p class="historia">Cosmética urbana y consciente. Diseñada para proteger tu piel del ritmo de la ciudad con ingredientes 100% naturales.</p>
+        
+        <div class="contacto-info">
+            <p>📍 Benito Juárez, BA</p>
+            <p>📱 +54 9 2281 310771</p>
+        </div>
+
+        <button class="carrito-btn" onclick="abrirCarrito()">CARRITO [<span id="contador">0</span>]</button>
+    </div>
+
+    <div class="main-content">
+        <h2 class="titulo-seccion">Catálogo</h2>
+        
+        <div class="productos-grid" id="grilla-productos">
+            </div>
+    </div>
+
+    <a href="https://wa.me/5492281310771?text=Hola!%20Tengo%20una%20consulta." class="whatsapp-float" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="35" alt="WA">
+    </a>
+
+    <div class="modal" id="modal-carrito">
+        <div class="modal-content">
+            <h2 style="font-family: 'Syncopate', sans-serif; border-bottom: 1px solid #333; padding-bottom: 1rem;">TU ORDEN</h2>
+            <div id="lista-carrito" style="margin-bottom: 2rem;"></div>
+            <h3 style="text-align: right; color: var(--acento);">TOTAL: $<span id="total-carrito">0</span></h3>
+            
+            <h4 style="margin-top: 2rem;">TUS DATOS</h4>
+            <input type="text" id="nombre-cliente" placeholder="Nombre completo">
+            <select id="tipo-envio">
+                <option value="retiro">Retirar por el local</option>
+                <option value="benito-juarez">Envío en Benito Juárez</option>
+                <option value="correo">Envío por Correo</option>
+            </select>
+            <input type="text" id="direccion-cliente" placeholder="Dirección exacta">
+
+            <h4 style="margin-top: 2rem;">MEDIOS DE PAGO</h4>
+            <div class="datos-banco">
+                <strong>TRANSFERENCIA (Cuenta DNI / BNA+)</strong><br><br>
+                Titular: Guillermo Reveron<br>
+                Alias: TU.ALIAS.ACA<br>
+                CBU: 0000000000000000000000
+            </div>
+            
+            <button class="btn-finalizar" onclick="enviarPedido()">ENVIAR PEDIDO</button>
+            <button onclick="cerrarCarrito()" style="width: 100%; padding: 1rem; margin-top: 0.5rem; background: transparent; color: #aaa; border: 1px solid #333; cursor: pointer;">CERRAR</button>
+        </div>
+    </div>
+
+    <script>
+        const MI_WHATSAPP = "5492281310771";
+        const LINK_MERCADO_PAGO_ABIERTO = "https://mpago.la/TU_LINK_ABIERTO";
+
+        // EL CATÁLOGO (Modificalo desde acá)
+        const CATALOGO_REAL = [
+            {
+                nombre: "Sérum Anti-Polución",
+                descripcion: "Escudo protector urbano con vitamina C.",
+                precio: 4500,
+                foto: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                nombre: "Crema de Noche Reset",
+                descripcion: "Reparación profunda para pieles cansadas.",
+                precio: 5200,
+                foto: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                nombre: "Bálsamo Limpiador",
+                descripcion: "Derrite el maquillaje y la contaminación.",
+                precio: 3500,
+                foto: "https://images.unsplash.com/photo-1556228720-1c2ae6bb6a11?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            }
+        ];
+
+        let carrito = [];
+
+        window.onload = () => {
+            dibujarCatalogo();
+        };
+
+        function dibujarCatalogo() {
+            const grilla = document.getElementById('grilla-productos');
+            grilla.innerHTML = '';
+            
+            CATALOGO_REAL.forEach((producto, index) => {
+                grilla.innerHTML += `
+                    <div class="card">
+                        <img src="${producto.foto}" alt="${producto.nombre}">
+                        <div class="card-info">
+                            <h3>${producto.nombre}</h3>
+                            <p style="color: #aaa; font-size: 0.9rem;">${producto.descripcion}</p>
+                            <p class="precio">$${producto.precio}</p>
+                            <button class="btn-add" onclick="agregarAlCarrito(${index})">SUMAR AL CARRITO</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function agregarAlCarrito(index) {
+            carrito.push(CATALOGO_REAL[index]);
+            document.getElementById('contador').innerText = carrito.length;
+            
+            const btn = event.target;
+            const textoOriginal = btn.innerText;
+            btn.innerText = "¡AGREGADO!";
+            btn.style.backgroundColor = "var(--acento)";
+            btn.style.borderColor = "var(--acento)";
+            btn.style.color = "white";
+            
+            setTimeout(() => {
+                btn.innerText = textoOriginal;
+                btn.style.backgroundColor = "transparent";
+                btn.style.borderColor = "var(--texto)";
+                btn.style.color = "var(--texto)";
+            }, 1000);
+        }
+
+        function abrirCarrito() {
+            const modal = document.getElementById('modal-carrito');
+            const lista = document.getElementById('lista-carrito');
+            const totalSpan = document.getElementById('total-carrito');
+            
+            if (carrito.length === 0) {
+                alert("Tu carrito está vacío.");
+                return;
+            }
+
+            lista.innerHTML = '';
+            let total = 0;
+
+            carrito.forEach((prod, i) => {
+                lista.innerHTML += `<div style="display: flex; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem;">
+                    <span>${prod.nombre}</span>
+                    <span>$${prod.precio} <button onclick="quitarDelCarrito(${i})" style="color:var(--acento); border:none; background:none; cursor:pointer; font-weight:bold;">X</button></span>
+                </div>`;
+                total += prod.precio;
+            });
+
+            totalSpan.innerText = total;
+            modal.style.display = 'flex';
+        }
+
+        function cerrarCarrito() {
+            document.getElementById('modal-carrito').style.display = 'none';
+        }
+
+        function quitarDelCarrito(index) {
+            carrito.splice(index, 1);
+            document.getElementById('contador').innerText = carrito.length;
+            if(carrito.length === 0) {
+                cerrarCarrito();
+            } else {
+                abrirCarrito();
+            }
+        }
+
+        function enviarPedido() {
+            const nombre = document.getElementById('nombre-cliente').value;
+            const envio = document.getElementById('tipo-envio').options[document.getElementById('tipo-envio').selectedIndex].text;
+            const direccion = document.getElementById('direccion-cliente').value;
+            const total = document.getElementById('total-carrito').innerText;
+
+            if(!nombre) {
+                alert("Por favor, decinos tu nombre.");
+                return;
+            }
+
+            let detalle = carrito.map(p => `- ${p.nombre}`).join('\n');
+
+            let mensaje = `*NUEVO PEDIDO - BIOGLOW* ⚡\n\n`;
+            mensaje += `*Cliente:* ${nombre}\n`;
+            mensaje += `*Logística:* ${envio}\n`;
+            if(direccion) mensaje += `*Dirección:* ${direccion}\n\n`;
+            mensaje += `*Productos:*\n${detalle}\n\n`;
+            mensaje += `*TOTAL:* $${total}\n\n`;
+            mensaje += `¡Hola! Te mando mi pedido. Acá te adjunto el comprobante de pago.`;
+
+            const urlWA = `https://wa.me/${MI_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+            
+            window.open(urlWA, '_blank');
+            window.location.href = LINK_MERCADO_PAGO_ABIERTO;
+        }
+    </script>
+</body>
+</html>
