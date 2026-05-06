@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UVA - Cosmética Natural</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        /* --- DISEÑO PREMIUM BIOGLOW / UVA --- */
+        :root {
+            --primary: #fdf8f5; /* Crema suave */
+            --accent: #d4a373;  /* Dorado/Bronce suave */
+            --text: #2d2d2d;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus+Jakarta+Sans', sans-serif; }
+        
+        body { background-color: var(--primary); color: var(--text); line-height: 1.6; }
+
+        header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); }
+
+        /* Banner Principal */
+        .hero {
+            height: 40vh;
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1596462502278-27bfdc4033c8?auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 { font-size: 2.5rem; font-weight: 300; }
+
+        /* Contenedor de Productos */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding-bottom: 5rem;
+        }
+
+        /* Tarjeta de Producto */
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+
+        .card-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .card-info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
+
+        .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+
+        .card-desc { font-size: 0.9rem; color: #666; margin-bottom: 1rem; flex-grow: 1; }
+
+        .card-price { font-size: 1.2rem; font-weight: 600; color: var(--accent); margin-bottom: 1rem; }
+
+        .btn-add {
+            background: var(--text);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-add:hover { background: var(--accent); }
+
+        .btn-out { background: #ccc; cursor: not-allowed; }
+
+        /* Botón WhatsApp Flotante */
+        .wsp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25d366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            text-decoration: none;
+        }
+
+        /* Carrito */
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--text);
+            color: white;
+            padding: 1rem;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .btn-checkout {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">UVA</div>
+    </header>
+
+    <section class="hero">
+        <div>
+            <h1>Sentite Natural</h1>
+            <p>Cosmética consciente para tu piel</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div id="product-grid" class="grid">
+            <p style="text-align: center; grid-column: 1/-1;">Cargando catálogo...</p>
+        </div>
+    </div>
+
+    <div id="cart-bar" class="cart-bar">
+        <span id="cart-text">Items en el carrito: 0</span>
+        <button class="btn-checkout" onclick="sendOrder()">Finalizar por WhatsApp</button>
+    </div>
+
+    <a href="https://wa.me/5492281445566" class="wsp-float" target="_blank">
+        <svg width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.854 0 0 0 13.601 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.573 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.573 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+        </svg>
+    </a>
+
+    <script>
+        // --- CONFIGURACIÓN ---
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSHFIl71ww6W_V3ja00PrPl_KAE6sxN6YU6STOK20bO7iIw_o_tq9G2v_CR2C9Ft1WBoYG_9Cfngp5A/pub?output=csv';
+        const WHATSAPP_NUMBER = '5492281445566'; // Poné tu número acá
+        const UALA_ALIAS = 'Tu.Alias.Uala'; // Poné tu alias acá
+
+        let cart = [];
+
+        // Función para cargar productos
+        function loadProducts() {
+            Papa.parse(SHEET_URL, {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    renderProducts(results.data);
+                }
+            });
+        }
+
+        function renderProducts(products) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            products.forEach((p, index) => {
+                if (!p.Producto) return;
+
+                const isOutOfStock = p.Stock.toUpperCase() === 'NO' || p.Stock === '0';
+                
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="${p.Imagen}" class="card-img" alt="${p.Producto}" onerror="this.src='https://via.placeholder.com/300x250?text=Imagen+Próximamente'">
+                    <div class="card-info">
+                        <h3 class="card-title">${p.Producto}</h3>
+                        <p class="card-desc">${p.Descripcion || ''}</p>
+                        <p class="card-price">$${p.Precio}</p>
+                        <button class="btn-add ${isOutOfStock ? 'btn-out' : ''}" 
+                                onclick="addToCart('${p.Producto}', ${p.Precio})" 
+                                ${isOutOfStock ? 'disabled' : ''}>
+                            ${isOutOfStock ? 'SIN STOCK' : 'AGREGAR AL CARRITO'}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const bar = document.getElementById('cart-bar');
+            const text = document.getElementById('cart-text');
+            
+            if (cart.length > 0) {
+                bar.style.display = 'flex';
+                const total = cart.reduce((sum, item) => sum + item.price, 0);
+                text.innerText = `Items: ${cart.length} | Total: $${total}`;
+            }
+        }
+
+        function sendOrder() {
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            let message = `¡Hola UVA! Quisiera hacer un pedido:\n\n`;
+            cart.forEach(item => {
+                message += `• ${item.name} - $${item.price}\n`;
+            });
+            message += `\n*Total: $${total}*\n`;
+            message += `\nAlias para transferencia (Ualá): *${UALA_ALIAS}*`;
+
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
+        }
+
+        window.onload = loadProducts;
+    </script>
+</body>
+</html>
