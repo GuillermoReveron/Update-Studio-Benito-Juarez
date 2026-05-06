@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioGlow - Tienda con WhatsApp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #f8edeb;
+            --accent: #d4a373;
+            --whatsapp: #25d366; /* Color oficial de WhatsApp */
+            --text: #4a4e69;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background-color: #fdfcfc;
+            color: var(--text);
+        }
+
+        header {
+            background-color: var(--primary);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 40px;
+        }
+
+        .producto {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .producto img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* --- BOTÓN WHATSAPP FLOTANTE --- */
+        .btn-whatsapp {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: var(--whatsapp);
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn-whatsapp:hover {
+            transform: scale(1.1);
+            background-color: #128c7e;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>BioGlow ✨</h1>
+    <p>Cosmética Natural</p>
+</header>
+
+<a href="https://wa.me/5492281310771" class="btn-whatsapp" target="_blank">
+    <i class="fa-brands fa-whatsapp"></i>
+</a>
+
+<div class="container">
+    <div class="producto">
+        <img src="img/serum-facial.jpg" alt="Sérum">
+        <h3>Sérum Facial</h3>
+        <p><strong>$4.500</strong></p>
+        <button onclick="alert('Pedido iniciado')">Comprar ahora</button>
+    </div>
+    </div>
+
+</body>
+</html>
