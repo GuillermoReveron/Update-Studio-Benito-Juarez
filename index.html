@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cecilia Llanos | Cosmética y Cuidado Personal</title>
+    <!-- Fuente premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --color-primario: #d95e38; /* Tono cálido tipo Natura */
+            --color-secundario: #4a4a4a;
+            --color-fondo: #fcfcfc;
+            --color-texto: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+        }
+
+        /* NAVBAR PROFESIONAL */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--color-primario);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .buscador {
+            flex-grow: 0.5;
+            display: flex;
+            background: #f0f0f0;
+            border-radius: 25px;
+            padding: 8px 20px;
+        }
+
+        .buscador input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 0.9em;
+        }
+
+        .iconos-nav i {
+            font-size: 1.3em;
+            margin-left: 20px;
+            color: var(--color-secundario);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .iconos-nav i:hover {
+            color: var(--color-primario);
+        }
+
+        /* BANNER PRINCIPAL (HERO) */
+        .hero {
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1615397323136-1288ed3d5964?q=80&w=1200&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .hero-contenido h2 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .btn-hero {
+            background-color: var(--color-primario);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 30px;
+            font-size: 1.1em;
+            transition: background 0.3s;
+        }
+
+        .btn-hero:hover {
+            background-color: #bf4d2a;
+        }
+
+        /* CATEGORÍAS */
+        .categorias {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 40px 20px;
+            background-color: white;
+        }
+
+        .cat-item {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .cat-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 2px solid transparent;
+            transition: border 0.3s;
+        }
+
+        .cat-item:hover .cat-img {
+            border-color: var(--color-primario);
+        }
+
+        /* SECCIÓN PRODUCTOS TIPO GRILLA */
+        .seccion-titulo {
+            text-align: center;
+            margin: 40px 0 20px;
+            font-size: 2em;
+            color: var(--color-secundario);
+        }
+
+        .grid-productos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 0 5%;
+            margin-bottom: 60px;
+        }
+
+        .tarjeta {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .tarjeta:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--color-primario);
+            color: white;
+            font-size: 0.7em;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        .img-container {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .tarjeta:hover .img-container img {
+            transform: scale(1.08); /* Efecto zoom premium */
+        }
+
+        .info-producto {
+            padding: 20px;
+        }
+
+        .marca {
+            font-size: 0.8em;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-producto h3 {
+            font-size: 1.1em;
+            margin: 5px 0 10px;
+            color: var(--color-texto);
+        }
+
+        .precio {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--color-primario);
+        }
+
+        .cuotas {
+            font-size: 0.8em;
+            color: #2e7d32; /* Verde tipo Mercado Libre */
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .btn-comprar {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--color-primario);
+            color: var(--color-primario);
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        .btn-comprar:hover {
+            background: var(--color-primario);
+            color: white;
+        }
+
+        /* FOOTER BÁSICO */
+        footer {
+            background: var(--color-secundario);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .buscador { display: none; } /* Ocultar buscador en celular para ahorrar espacio */
+            .hero-contenido h2 { font-size: 2em; }
+            .categorias { overflow-x: auto; justify-content: flex-start; padding-bottom: 20px;}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">C. Llanos</div>
+        <div class="buscador">
+            <input type="text" placeholder="¿Qué estás buscando?">
+            <i class="fas fa-search" style="color: #999; margin-top: 3px;"></i>
+        </div>
+        <div class="iconos-nav">
+            <i class="far fa-user"></i>
+            <i class="far fa-heart"></i>
+            <i class="fas fa-shopping-bag"></i>
+        </div>
+    </nav>
+
+    <!-- HERO BANNER -->
+    <section class="hero">
+        <div class="hero-contenido">
+            <h2>Descubrí el poder de tu piel</h2>
+            <p style="margin-bottom: 20px; font-size: 1.2em;">Nuevas fórmulas hidratantes con ingredientes naturales.</p>
+            <a href="#lanzamientos" class="btn-hero">Ver Lanzamientos</a>
+        </div>
+    </section>
+
+    <!-- CATEGORÍAS RÁPIDAS -->
+    <section class="categorias">
+        <div class="cat-item">
+            <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=150&auto=format&fit=crop" class="cat-img" alt="Facial">
+            <p>Rostro</p>
+        </div>
+        <div class="cat-item">
+            <img src="https://images.unsplash.com/photo-1599305090598-fe179d501227?q=80&w=150&auto=format&fit=crop" class="cat-img" alt="Corporal">
+            <p>Cuerpo</p>
+        </div>
+        <div class="cat-item">
+            <img src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=150&auto=format&fit=crop" class="cat-img" alt="Manos">
+            <p>Manos</p>
+        </div>
+    </section>
+
+    <!-- PRODUCTOS DESTACADOS -->
+    <h2 class="seccion-titulo" id="lanzamientos">Favoritos del Mes</h2>
+    <div class="grid-productos" id="contenedor-productos">
+        <!-- Acá se inyectan los productos vía JavaScript -->
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Cecilia Llanos Cosmética. Todos los derechos reservados.</p>
+        <p style="font-size: 0.8em; margin-top: 10px;">Desarrollado por Update Studio</p>
+    </footer>
+
+    <script>
+        // DATOS DE PRUEBA PREMIUM
+        const productos = [
+            {
+                marca: "Cuidado Facial",
+                nombre: "Sérum Revitalizante con Vitamina C",
+                precio: 24500,
+                imagen: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=400&auto=format&fit=crop",
+                etiqueta: "NUEVO"
+            },
+            {
+                marca: "Cuidado Corporal",
+                nombre: "Pulpa Hidratante de Castaña",
+                precio: 18900,
+                imagen: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=400&auto=format&fit=crop",
+                etiqueta: ""
+            },
+            {
+                marca: "Cuidado de Manos",
+                nombre: "Crema Nutritiva de Nuez Pecán",
+                precio: 9500,
+                imagen: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=400&auto=format&fit=crop",
+                etiqueta: "-15%"
+            },
+            {
+                marca: "Tratamiento",
+                nombre: "Crema Antiseñales Día",
+                precio: 32000,
+                imagen: "https://images.unsplash.com/photo-1599305090598-fe179d501227?q=80&w=400&auto=format&fit=crop",
+                etiqueta: "MÁS VENDIDO"
+            }
+        ];
+
+        function renderizarProductos() {
+            const contenedor = document.getElementById('contenedor-productos');
+            
+            productos.forEach(prod => {
+                // Calculamos cuotas para que se vea más real
+                const valorCuota = (prod.precio / 3).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+                const precioFormateado = prod.precio.toLocaleString('es-AR');
+
+                const htmlEtiqueta = prod.etiqueta ? `<span class="badge">${prod.etiqueta}</span>` : '';
+
+                const tarjeta = document.createElement('div');
+                tarjeta.className = 'tarjeta';
+                tarjeta.innerHTML = `
+                    ${htmlEtiqueta}
+                    <div class="img-container">
+                        <img src="${prod.imagen}" alt="${prod.nombre}">
+                    </div>
+                    <div class="info-producto">
+                        <span class="marca">${prod.marca}</span>
+                        <h3>${prod.nombre}</h3>
+                        <div class="precio">$${precioFormateado}</div>
+                        <div class="cuotas">3 cuotas sin interés de $${valorCuota}</div>
+                        <button class="btn-comprar">Agregar al carrito</button>
+                    </div>
+                `;
+                contenedor.appendChild(tarjeta);
+            });
+        }
+
+        renderizarProductos();
+    </script>
+
+</body>
+</html>
