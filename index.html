@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioGlow - Cosmética Premium</title>
+    <meta property="og:title" content="BioGlow - Tienda de Cosmética">
+    <meta property="og:description" content="Descubrí nuestra línea de cosmética natural y cuidado de la piel.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Estética "Boutique" / Premium */
+        :root {
+            --fondo: #fcfbf9;
+            --texto: #333;
+            --acento: #d4a373;
+            --blanco: #fff;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            background-color: var(--fondo);
+            color: var(--texto);
+        }
+
+        /* Menú Superior */
+        header {
+            background-color: var(--blanco);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--texto);
+            letter-spacing: 2px;
+        }
+
+        .carrito-btn {
+            background: var(--acento);
+            color: var(--blanco);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Carrusel */
+        .carrusel {
+            width: 100%;
+            height: 60vh;
+            position: relative;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.activo {
+            opacity: 0.6;
+        }
+
+        .carrusel-texto {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            color: var(--blanco);
+        }
+
+        .carrusel-texto h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Grilla de Productos */
+        .container {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 1rem;
+        }
+
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .card {
+            background: var(--blanco);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+        }
+
+        .card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .card-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .card-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .precio {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--acento);
+            margin-bottom: 1rem;
+        }
+
+        .btn-add {
+            background-color: var(--texto);
+            color: var(--blanco);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Montserrat', sans-serif;
+            transition: background 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: var(--acento);
+        }
+
+        /* Modal Carrito y Checkout */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--blanco);
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content input, .modal-content select {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn-finalizar {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 1rem;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .datos-banco {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            user-select: all;
+        }
+
+        /* Botón WhatsApp Flotante */
+        .whatsapp-flotante {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .carrusel-texto h2 { font-size: 2rem; }
+            header { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>BioGlow</h1>
+        <button class="carrito-btn" onclick="abrirCarrito()">🛒 Carrito (<span id="contador">0</span>)</button>
+    </header>
+
+    <div class="carrusel">
+        <div class="slide activo" style="background-image: url('https://images.unsplash.com/photo-1617897903246-719242758050?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')"></div>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1556228578-0d85b1a4d571?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')"></div>
+        <div class="carrusel-texto">
+            <h2>Cosmética Consciente</h2>
+            <p>Cuidado natural para tu piel</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="productos-grid" id="grilla-productos">
+            </div>
+    </div>
+
+    <a href="https://wa.me/5492281310771?text=Hola!%20Tengo%20una%20consulta%20sobre%20sus%20productos." class="whatsapp-flotante" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="35" alt="WhatsApp">
+    </a>
+
+    <div class="modal" id="modal-carrito">
+        <div class="modal-content">
+            <h2 style="font-family: 'Playfair Display', serif;">Tu Pedido</h2>
+            <div id="lista-carrito" style="margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;"></div>
+            <h3 style="text-align: right;">Total: $<span id="total-carrito">0</span></h3>
+            
+            <h4>Datos de Entrega</h4>
+            <input type="text" id="nombre-cliente" placeholder="Tu Nombre">
+            <select id="tipo-envio">
+                <option value="retiro">Retiro en local</option>
+                <option value="benito-juarez">Envío en Benito Juárez</option>
+                <option value="correo">Envío por Correo (Otra ciudad)</option>
+            </select>
+            <input type="text" id="direccion-cliente" placeholder="Dirección / Código Postal">
+
+            <h4>Opciones de Pago</h4>
+            <div class="datos-banco">
+                <strong>Cuenta DNI / BNA+ (Transferencia)</strong><br>
+                Titular: Tu Nombre<br>
+                Alias: TU.ALIAS.MERCADOPAGO<br>
+                CBU: 0000000000000000000000
+            </div>
+            
+            <button class="btn-finalizar" onclick="enviarPedido()">Confirmar y Enviar por WhatsApp</button>
+            <button onclick="cerrarCarrito()" style="width: 100%; padding: 1rem; margin-top: 0.5rem; border: none; background: #eee; border-radius: 8px; cursor: pointer;">Seguir Comprando</button>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN PRINCIPAL (Cambiá esto desde tu código, sin Google Sheets)
+        const MI_WHATSAPP = "5492281310771";
+        const LINK_MERCADO_PAGO_ABIERTO = "https://mpago.la/TU_LINK_ABIERTO"; // Link sin monto fijo para carritos
+
+        // TU CATÁLOGO FIJO (Modificá precios, fotos y nombres acá)
+        const CATALOGO_REAL = [
+            {
+                nombre: "Sérum Iluminador",
+                descripcion: "Vitamina C concentrada para una piel radiante.",
+                precio: 4500,
+                foto: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                nombre: "Crema de Noche",
+                descripcion: "Hidratación profunda con ácido hialurónico.",
+                precio: 5200,
+                foto: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                nombre: "Agua Micelar",
+                descripcion: "Limpieza suave para todo tipo de piel.",
+                precio: 3500,
+                foto: "https://images.unsplash.com/photo-1556228720-1c2ae6bb6a11?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            }
+        ];
+
+        let carrito = [];
+
+        // Inicializar
+        window.onload = () => {
+            iniciarCarrusel();
+            dibujarCatalogo();
+        };
+
+        // Lógica del Carrusel
+        function iniciarCarrusel() {
+            const slides = document.querySelectorAll('.slide');
+            let actual = 0;
+            setInterval(() => {
+                slides[actual].classList.remove('activo');
+                actual = (actual + 1) % slides.length;
+                slides[actual].classList.add('activo');
+            }, 4000);
+        }
+
+        // Dibujar el catálogo
+        function dibujarCatalogo() {
+            const grilla = document.getElementById('grilla-productos');
+            grilla.innerHTML = '';
+            
+            CATALOGO_REAL.forEach((producto, index) => {
+                grilla.innerHTML += `
+                    <div class="card">
+                        <img src="${producto.foto}" alt="${producto.nombre}">
+                        <div class="card-info">
+                            <h3>${producto.nombre}</h3>
+                            <p>${producto.descripcion}</p>
+                            <p class="precio">$${producto.precio}</p>
+                            <button class="btn-add" onclick="agregarAlCarrito(${index})">Agregar al Carrito</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Lógica del Carrito
+        function agregarAlCarrito(index) {
+            carrito.push(CATALOGO_REAL[index]);
+            document.getElementById('contador').innerText = carrito.length;
+            
+            // Animación visual de confirmación
+            const btn = event.target;
+            const textoOriginal = btn.innerText;
+            btn.innerText = "¡Agregado! ✔";
+            btn.style.backgroundColor = "#25d366";
+            setTimeout(() => {
+                btn.innerText = textoOriginal;
+                btn.style.backgroundColor = "";
+            }, 1000);
+        }
+
+        function abrirCarrito() {
+            const modal = document.getElementById('modal-carrito');
+            const lista = document.getElementById('lista-carrito');
+            const totalSpan = document.getElementById('total-carrito');
+            
+            if (carrito.length === 0) {
+                alert("El carrito está vacío. ¡Agregá productos primero!");
+                return;
+            }
+
+            lista.innerHTML = '';
+            let total = 0;
+
+            carrito.forEach((prod, i) => {
+                lista.innerHTML += `<div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>${prod.nombre}</span>
+                    <span>$${prod.precio} <button onclick="quitarDelCarrito(${i})" style="color:red; border:none; background:none; cursor:pointer;">❌</button></span>
+                </div>`;
+                total += prod.precio;
+            });
+
+            totalSpan.innerText = total;
+            modal.style.display = 'flex';
+        }
+
+        function cerrarCarrito() {
+            document.getElementById('modal-carrito').style.display = 'none';
+        }
+
+        function quitarDelCarrito(index) {
+            carrito.splice(index, 1);
+            document.getElementById('contador').innerText = carrito.length;
+            if(carrito.length === 0) {
+                cerrarCarrito();
+            } else {
+                abrirCarrito();
+            }
+        }
+
+        // Lógica de Compra y WhatsApp
+        function enviarPedido() {
+            const nombre = document.getElementById('nombre-cliente').value;
+            const envio = document.getElementById('tipo-envio').options[document.getElementById('tipo-envio').selectedIndex].text;
+            const direccion = document.getElementById('direccion-cliente').value;
+            const total = document.getElementById('total-carrito').innerText;
+
+            if(!nombre) {
+                alert("Por favor, ingresá tu nombre.");
+                return;
+            }
+
+            let detalle = carrito.map(p => `- ${p.nombre}`).join('\n');
+
+            let mensaje = `*NUEVO PEDIDO - BIOGLOW* ✨\n\n`;
+            mensaje += `*Cliente:* ${nombre}\n`;
+            mensaje += `*Logística:* ${envio}\n`;
+            if(direccion) mensaje += `*Detalle entrega:* ${direccion}\n\n`;
+            mensaje += `*Productos:*\n${detalle}\n\n`;
+            mensaje += `*TOTAL A PAGAR:* $${total}\n\n`;
+            mensaje += `¡Hola! Te confirmo mi pedido. 📌 A continuación te envío la captura del comprobante de pago.`;
+
+            const urlWA = `https://wa.me/${MI_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+            
+            // Abre WhatsApp y el Link de Mercado Pago
+            window.open(urlWA, '_blank');
+            window.location.href = LINK_MERCADO_PAGO_ABIERTO;
+        }
+    </script>
+</body>
+</html>
