@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioGlow - Cosmética Natural</title>
+    <style>
+        /* CSS: El Estilo (Pilar 2) */
+        :root {
+            --primary: #f8edeb;
+            --accent: #d4a373;
+            --text: #4a4e69;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #ffffff;
+            color: var(--text);
+        }
+
+        header {
+            background-color: var(--primary);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .carrito-status {
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+        }
+
+        .producto {
+            border: 1px solid #eee;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .producto:hover {
+            transform: translateY(-10px); /* Efecto hover mencionado */
+        }
+
+        .img-placeholder {
+            background-color: var(--primary);
+            height: 200px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>BioGlow ✨</h1>
+    <p class="carrito-status">Carrito: <span id="cart-count">0</span> productos</p>
+</header>
+
+<div class="container">
+    <div class="producto">
+        <div class="img-placeholder"></div>
+        <h3>Sérum Facial</h3>
+        <p>Hidratación profunda con ácido hialurónico.</p>
+        <p><strong>$4.500</strong></p>
+        <button onclick="agregarAlCarrito()">Agregar al Carrito</button>
+    </div>
+
+    <div class="producto">
+        <div class="img-placeholder"></div>
+        <h3>Crema de Noche</h3>
+        <p>Reparación celular intensiva mientras duermes.</p>
+        <p><strong>$5.200</strong></p>
+        <button onclick="agregarAlCarrito()">Agregar al Carrito</button>
+    </div>
+
+    <div class="producto">
+        <div class="img-placeholder"></div>
+        <h3>Limpiador Suave</h3>
+        <p>Remueve impurezas sin resecar tu piel.</p>
+        <p><strong>$3.800</strong></p>
+        <button onclick="agregarAlCarrito()">Agregar al Carrito</button>
+    </div>
+</div>
+
+<script>
+    // JavaScript: La Lógica (Pilar 3)
+    let contador = 0;
+
+    function agregarAlCarrito() {
+        contador++;
+        document.getElementById('cart-count').innerText = contador;
+        alert("¡Producto agregado con éxito!");
+    }
+</script>
+
+</body>
+</html>
