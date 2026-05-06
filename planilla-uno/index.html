@@ -1,1 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UVA - Tienda Oficial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fcfcfc; }
+        .product-card { transition: all 0.3s ease; border: 1px solid #eee; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .btn-buy { background-color: #000; color: #fff; transition: background 0.3s; }
+        .btn-buy:hover { background-color: #333; }
+        .out-of-stock { filter: grayscale(1); opacity: 0.7; }
+    </style>
+</head>
+<body>
 
+    <header class="bg-white border-b sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-tighter">UVA <span class="text-xs font-light text-gray-500">COSMÉTICA</span></h1>
+            <div class="text-sm text-gray-600">Benito Juárez, BA</div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <div id="contenedor-productos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <p class="text-center col-span-full py-20 text-gray-400 animate-pulse">Cargando catálogo...</p>
+        </div>
+    </main>
+
+    <script>
+        // ==========================================
+        // 1. CONFIGURACIÓN PERSONAL (Completá acá)
+        // ==========================================
+        const CONFIG = {
+            csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSHFIl71ww6W_V3ja00PrPl_KAE6sxN6YU6STOK20bO7iIw_o_tq9G2v_CR2C9Ft1WBoYG_9Cfngp5A/pub?output=csv',
+            whatsapp: '5492281XXXXXX', // Poné tu número sin el +
+            ualaAlias: 'TU.ALIAS.UALA',
+            ualaCBU: '00000031000XXXXXXXXX'
+        };
+
+        // ==========================================
+        // 2. MOTOR LÓGICO (No tocar si no es necesario)
+        // ==========================================
+        async function cargarProductos() {
+            try {
+                const respuesta = await fetch(CONFIG.csvUrl);
+                const data = await respuesta.text();
+                const filas = data.split('\n').slice(1); // Ignora el encabezado
+                const contenedor = document.getElementById('contenedor-productos');
+                contenedor.innerHTML = '';
+
+                filas.forEach(fila => {
+                    const columnas = fila.split(',');
+                    if (columnas.length >= 4) {
+                        const [nombre, precio, imagen, stock] = columnas;
+                        const tieneStock = stock.trim().toUpperCase() === 'SI';
+
+                        contenedor.innerHTML += `
+                            <div class="product-card bg-white rounded-2xl overflow-hidden ${!tieneStock ? 'out-of-stock' : ''}">
+                                <div class="aspect-square bg-gray-100 overflow-hidden">
+                                    <img src="img/${imagen.trim()}" alt="${nombre}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400x400?text=Cosmética+UVA'">
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="text-lg font-semibold mb-1">${nombre}</h3>
+                                    <p class="text-gray-900 font-bold mb-4">$${precio}</p>
+                                    
+                                    ${tieneStock 
+                                        ? `<button onclick="hacerPedido('${nombre}', '${precio}')" class="btn-buy w-full py-3 rounded-xl font-semibold">PEDIR Y PAGAR</button>`
+                                        : `<div class="bg-gray-200 text-gray-500 text-center py-3 rounded-xl font-semibold uppercase text-sm">Sin Stock</div>`
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (error) {
+                console.error("Error al cargar la planilla:", error);
+                document.getElementById('contenedor-productos').innerHTML = "<p class='text-center col-span-full'>Hubo un error al conectar con la planilla de Google.</p>";
+            }
+        }
+
+        function hacerPedido(producto, precio) {
+            const mensaje = `Hola! Quiero el producto: ${producto} ($${precio}). Mi alias de Ualá es ${CONFIG.ualaAlias}. ¿Me confirmas para transferir?`;
+            const urlWhastapp = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(mensaje)}`;
+            window.open(urlWhastapp, '_blank');
+        }
+
+        // Iniciar la carga
+        window.onload = cargarProductos;
+    </script>
+</body>
+</html>
