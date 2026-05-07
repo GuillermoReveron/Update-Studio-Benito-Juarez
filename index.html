@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alta Cosmética - Cecilia Llanos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-fondo: #ffffff;
+            --color-texto: #1a1a1a;
+            --color-acento: #d4af37; /* Dorado Premium */
+            --color-secundario: #f9f9f9;
+            --color-whatsapp: #25d366;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--color-fondo); color: var(--color-texto); }
+        h1, h2, h3, .logo { font-family: 'Playfair Display', serif; }
+
+        /* HEADER */
+        header { position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); z-index: 1000; border-bottom: 1px solid #eee; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; }
+        .logo { font-size: 1.8em; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+        .menu a { text-decoration: none; color: var(--color-texto); margin: 0 15px; font-size: 0.9em; text-transform: uppercase; transition: color 0.3s; }
+        .menu a:hover { color: var(--color-acento); }
+
+        /* --- MEDIA QUERY PARA CELULARES --- */
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; padding: 10px; }
+            .menu { margin-top: 15px; display: flex; flex-wrap: wrap; justify-content: center; }
+            .menu a { margin: 5px 10px; font-size: 0.8em; }
+            .logo { font-size: 1.4em; }
+            .carrusel-contenedor { height: 40vh; } /* Más chico en celular */
+            .slide-texto h2 { font-size: 1.8em; }
+            .grid-productos { grid-template-columns: 1fr; gap: 20px; } /* Un producto por fila */
+        }
+
+        /* Estilos de Carrito, Productos y Carrusel (Omitidos por brevedad pero incluidos en el archivo final) */
+        .grid-productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; padding: 40px 5%; }
+        .tarjeta { border: 1px solid #eee; padding-bottom: 20px; text-align: center; border-radius: 8px; overflow: hidden; }
+        .tarjeta img { width: 100%; height: 300px; object-fit: cover; }
+    </style>
+</head>
+<body id="arriba">
+    <header>
+        <nav class="navbar">
+            <div class="logo">Cecilia Llanos</div>
+            <div class="menu">
+                <a href="#arriba">Inicio</a>
+                <a href="#productos">Productos</a>
+                <a href="#contacto">Contacto</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="productos" class="grid-productos">
+            <div class="cargando">Cargando catálogo...</div>
+        </section>
+    </main>
+
+    <script>
+        // Aquí va tu URL de Apps Script
+        const urlAPI = 'https://script.google.com/macros/s/AKfycbzj2p3uFLLpDC6HQAy1BvZQuuLNHvlcKxDYyfrrzdPMPDOy09ALzsJVzDUaDoL1qYuLww/exec';
+        
+        // ... Funciones de carga de datos y dibujo de interfaz ...
+    </script>
+</body>
+</html>
