@@ -295,7 +295,8 @@
 
         async function cargarDatosDesdeGoogle() {
             try {
-                const respuesta = await fetch(urlAPI);
+                // Le agregamos { redirect: "follow" } para que persiga los datos
+                const respuesta = await fetch(urlAPI, { redirect: "follow" });
                 const data = await respuesta.json();
                 
                 // SISTEMA INTELIGENTE DE CARGA (Arreglado)
