@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bruno Repuestos | Catálogo Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #ef4444;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --glass: rgba(30, 41, 59, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); line-height: 1.6; }
+
+        /* HEADER PREMIUM */
+        header { 
+            position: sticky; top: 0; z-index: 1000; 
+            background: var(--glass); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 5%; display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-family: 'Syncopate', sans-serif; font-size: 1.2rem; letter-spacing: -1px; color: var(--text-main); }
+        .logo span { color: var(--accent); }
+
+        /* BUSCADOR */
+        .search-container { padding: 20px 5%; text-align: center; background: var(--bg); }
+        #buscador {
+            width: 100%; max-width: 500px; padding: 12px 20px; border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1); background: var(--card-bg);
+            color: white; font-size: 1rem; outline: none; transition: 0.3s;
+        }
+        #buscador:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+
+        /* GRID DE PRODUCTOS */
+        .grid-productos { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; padding: 20px 5% 100px; 
+        }
+        
+        .tarjeta { 
+            background: var(--card-bg); border-radius: 20px; overflow: hidden; 
+            border: 1px solid rgba(255,255,255,0.05); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column;
+        }
+        .tarjeta:hover { transform: translateY(-8px); border-color: var(--accent); }
+        
+        .img-container { position: relative; width: 100%; height: 220px; overflow: hidden; }
+        .tarjeta img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .tarjeta:hover img { transform: scale(1.1); }
+
+        .info { padding: 20px; flex-grow: 1; }
+        .categoria { font-size: 0.7rem; text-transform: uppercase; color: var(--accent); font-weight: 800; letter-spacing: 1px; }
+        .nombre { font-size: 1.1rem; margin: 5px 0; font-weight: 700; min-height: 50px; }
+        .precio { font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin: 15px 0; }
+
+        .btn-add { 
+            background: var(--accent); color: white; border: none; padding: 14px; 
+            border-radius: 12px; cursor: pointer; font-weight: 700; width: 100%; 
+            transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-add:hover { filter: brightness(1.2); box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4); }
+
+        /* CARRITO FLOTANTE */
+        .cart-trigger {
+            position: fixed; bottom: 30px; right: 30px; 
+            background: var(--accent); color: white; width: 60px; height: 60px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5); z-index: 1001;
+        }
+        #cart-count { position: absolute; top: 0; right: 0; background: white; color: var(--accent); font-size: 0.8rem; font-weight: 800; padding: 2px 6px; border-radius: 10px; }
+
+        /* PANEL LATERAL */
+        .cart-panel {
+            position: fixed; top: 0; right: -100%; width: 100%; max-width: 400px; height: 100%;
+            background: var(--card-bg); z-index: 2000; transition: 0.5s ease; padding: 40px 25px;
+            display: flex; flex-direction: column;
+        }
+        .cart-panel.active { right: 0; }
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .btn-checkout {
+            background: #22c55e; color: white; border: none; padding: 18px; border-radius: 15px;
+            font-weight: 800; cursor: pointer; font-size: 1rem; margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">BRUNO<span>.REPUESTOS</span></div>
+        <div onclick="toggleCart()" style="cursor:pointer; position:relative;">
+            <i class="fas fa-shopping-bag fa-lg"></i>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="buscador" placeholder="Buscar repuesto (ej: filtro, aceite, bujía)..." onkeyup="filtrar()">
+    </div>
+
+    <div class="grid-productos" id="contenedor">
+        </div>
+
+    <div class="cart-trigger" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-count">0</span>
+    </div>
+
+    <div class="cart-panel" id="panel">
+        <h2 style="margin-bottom:30px">TU PEDIDO</h2>
+        <div id="cart-items" style="flex-grow:1; overflow-y:auto;"></div>
+        <div id="total" style="font-size:1.5rem; font-weight:800; margin:20px 0;">Total: $0</div>
+        <button class="btn-checkout" onclick="enviar()">
+            <i class="fab fa-whatsapp"></i> ENVIAR A BRUNO
+        </button>
+        <p onclick="toggleCart()" style="text-align:center; margin-top:20px; cursor:pointer; color:var(--text-dim)">Cerrar ventana</p>
+    </div>
+
+    <script>
+        const API = 'https://script.google.com/macros/s/AKfycbxzt_H5NGX42uZA1qvPD232h1VEFn7lwSrUtkkiCiwy7JvKzfIHPbyh0K689-olMBhl/exec';
+        const WHATSAPP = "5492281310771";
+        let productos = [];
+        let carrito = [];
+
+        async function init() {
+            const resp = await fetch(API);
+            productos = await resp.json();
+            dibujar(productos);
+        }
+
+        function dibujar(lista) {
+            const container = document.getElementById('contenedor');
+            container.innerHTML = lista.map(p => `
+                <div class="tarjeta">
+                    <div class="img-container">
+                        <img src="${p.img || 'https://via.placeholder.com/300x220/1e293b/ffffff?text=Sin+Imagen'}" alt="${p.nombre}">
+                    </div>
+                    <div class="info">
+                        <span class="categoria">${p.stock === 'SI' ? 'En Stock' : 'Consultar'}</span>
+                        <h3 class="nombre">${p.nombre}</h3>
+                        <p style="color:var(--text-dim); font-size:0.85rem">${p.descripcion || ''}</p>
+                        <div class="precio">$${Number(p.precio).toLocaleString('es-AR')}</div>
+                        <button class="btn-add" onclick="agregar(${p.id})">
+                            <i class="fas fa-plus"></i> AGREGAR
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filtrar() {
+            const busqueda = document.getElementById('buscador').value.toLowerCase();
+            const filtrados = productos.filter(p => p.nombre.toLowerCase().includes(busqueda));
+            dibujar(filtrados);
+        }
+
+        function toggleCart() { document.getElementById('panel').classList.toggle('active'); }
+
+        function agregar(id) {
+            const p = productos.find(item => item.id == id);
+            carrito.push(p);
+            actualizarUI();
+        }
+
+        function actualizarUI() {
+            document.getElementById('cart-count').innerText = carrito.length;
+            const list = document.getElementById('cart-items');
+            let t = 0;
+            list.innerHTML = carrito.map(i => {
+                t += Number(i.precio);
+                return `<div class="cart-item"><span>${i.nombre}</span><strong>$${i.precio}</strong></div>`;
+            }).join('');
+            document.getElementById('total').innerText = `Total: $${t.toLocaleString('es-AR')}`;
+        }
+
+        function enviar() {
+            if(carrito.length === 0) return;
+            let m = "Hola Bruno! Te paso mi pedido:\n\n";
+            carrito.forEach(i => m += `• ${i.nombre} ($${i.precio})\n`);
+            m += `\n*${document.getElementById('total').innerText}*`;
+            window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(m)}`);
+        }
+
+        init();
+    </script>
+</body>
+</html>
