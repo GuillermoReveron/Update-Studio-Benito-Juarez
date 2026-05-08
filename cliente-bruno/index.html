@@ -11,121 +11,100 @@
         :root {
             --color-fondo: #ffffff;
             --color-texto: #1a1a1a;
-            --color-acento: #333333; /* Color más sobrio para repuestos */
+            --color-acento: #e63946; 
             --color-secundario: #f4f4f4;
             --color-whatsapp: #25D366;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--color-fondo); color: var(--color-texto); }
-        h1, h2, h3, .logo { font-family: 'Playfair Display', serif; }
-
-        /* HEADER */
-        header { position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); z-index: 1000; border-bottom: 1px solid #eee; }
-        .top-bar { background-color: var(--color-texto); color: white; text-align: center; padding: 10px; font-size: 0.85em; letter-spacing: 1px; font-weight: 600; text-transform: uppercase;}
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; }
-        .logo { font-size: 2em; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
-        .iconos-nav { position: relative; cursor: pointer; }
-        .contador-carrito { position: absolute; top: -8px; right: -10px; background: #cc0000; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7em; font-weight: bold; }
-
-        /* GRID PRODUCTOS */
-        .seccion-padding { padding: 60px 5%; min-height: 400px; }
-        .grid-productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; }
-        .tarjeta { position: relative; text-align: center; transition: transform 0.3s; border: 1px solid #eee; padding-bottom: 20px; border-radius: 8px; overflow: hidden; background: white;}
-        .tarjeta img { width: 100%; height: 250px; object-fit: cover; margin-bottom: 15px; }
-        .precio { font-size: 1.4em; color: var(--color-texto); font-weight: 600; margin-bottom: 20px; }
-
-        /* BOTONES */
-        .btn { width: 90%; padding: 12px; border: none; text-transform: uppercase; font-weight: 600; cursor: pointer; border-radius: 4px; background-color: var(--color-texto); color: white; margin-top: 10px;}
+        header { position: sticky; top: 0; background: white; z-index: 1000; border-bottom: 1px solid #eee; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.5em; font-weight: 600; }
         
-        /* CARRITO */
-        .carrito-lateral { position: fixed; top: 0; right: -400px; width: 350px; height: 100vh; background: white; box-shadow: -2px 0 10px rgba(0,0,0,0.1); transition: right 0.3s ease; z-index: 2000; padding: 20px; }
-        .carrito-lateral.abierto { right: 0; }
+        .grid-productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
+        .tarjeta { border: 1px solid #eee; padding: 15px; border-radius: 10px; text-align: center; background: white; transition: 0.3s; }
+        .tarjeta:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .tarjeta img { width: 100%; height: 200px; object-fit: cover; border-radius: 5px; }
+        .precio { font-size: 1.2em; font-weight: 600; margin: 10px 0; color: var(--color-acento); }
+        
+        .btn { background: var(--color-texto); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: 600; }
+        .btn-ws { background: var(--color-whatsapp); margin-top: 5px; }
+
+        #carrito-flotante { position: fixed; bottom: 20px; right: 20px; background: var(--color-whatsapp); color: white; padding: 15px 20px; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: none; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">Catálogo de Repuestos - Bruno Repuestos</div>
-
     <header>
-        <nav class="navbar">
-            <div class="logo">Bruno Repuestos</div>
-            <div class="iconos-nav" onclick="toggleCarrito()">
-                <i class="fas fa-shopping-cart fa-lg"></i>
-                <span class="contador-carrito" id="contador">0</span>
-            </div>
-        </nav>
+        <div class="logo">BRUNO REPUESTOS</div>
+        <div id="cart-icon"><i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span></div>
     </header>
 
-    <section id="catalogo" class="seccion-padding">
-        <div class="grid-productos" id="contenedor-productos">
-            <p style="text-align:center;">Cargando repuestos...</p>
-        </div>
-    </section>
+    <div class="grid-productos" id="contenedor-productos">
+        <p>Cargando repuestos...</p>
+    </div>
 
-    <div class="carrito-lateral" id="carrito-lateral">
-        <div onclick="toggleCarrito()" style="cursor:pointer; text-align:right;">CERRAR X</div>
-        <h3>Tu Pedido</h3>
-        <div id="items-carrito"></div>
-        <button class="btn" onclick="enviarWhatsApp()">Enviar pedido por WhatsApp</button>
+    <div id="carrito-flotante" onclick="enviarPedido()">
+        <i class="fab fa-whatsapp"></i> Enviar pedido (<span id="cart-total">0</span>)
     </div>
 
     <script>
-        // LA API DE BRUNO QUE ME PASASTE
-        const urlAPI = 'https://script.google.com/macros/s/AKfycbyKD84ocKmzBSiotyAscvW3Qi8rOiUEHqLOtDYG691-ftw55ceLEqFCliYofdPlkaG3/exec';
-        const numeroWhatsapp = "5492281310771"; // El número de Bruno
+        // LA NUEVA API QUE FUNCIONA
+        const urlAPI = 'https://script.google.com/macros/s/AKfycbxzt_H5NGX42uZA1qvPD232h1VEFn7lwSrUtkkiCiwy7JvKzfIHPbyh0K689-olMBhl/exec';
+        const numeroWhatsapp = "5492281310771"; 
+        
         let productos = [];
         let carrito = [];
 
-        async function cargarDatos() {
+        async function obtenerProductos() {
             try {
-                const respuesta = await fetch(urlAPI);
-                const data = await respuesta.json();
-                productos = Array.isArray(data) ? data : data.productos;
-                dibujarCatalogo();
-            } catch (e) { console.error(e); }
+                const response = await fetch(urlAPI);
+                productos = await response.json();
+                renderizar(productos);
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('contenedor-productos').innerHTML = "Error al cargar productos. Revisa la planilla.";
+            }
         }
 
-        function dibujarCatalogo() {
-            const contenedor = document.getElementById('contenedor-productos');
-            contenedor.innerHTML = '';
-            productos.forEach(p => {
-                contenedor.innerHTML += `
+        function renderizar(lista) {
+            const container = document.getElementById('contenedor-productos');
+            container.innerHTML = "";
+            lista.forEach(p => {
+                container.innerHTML += `
                     <div class="tarjeta">
-                        <img src="${p.img || 'https://via.placeholder.com/250'}" alt="${p.nombre}">
+                        <img src="${p.img || 'https://via.placeholder.com/200'}" alt="${p.nombre}">
                         <h3>${p.nombre}</h3>
-                        <div class="precio">$${Number(p.precio).toLocaleString('es-AR')}</div>
-                        <button class="btn" onclick="agregarAlCarrito(${p.id})">Agregar al Carrito</button>
+                        <p>${p.descripcion || ''}</p>
+                        <div class="precio">$${p.precio}</div>
+                        <button class="btn" onclick="agregar(${p.id})">Agregar al carrito</button>
                     </div>
                 `;
             });
         }
 
-        function toggleCarrito() { document.getElementById('carrito-lateral').classList.toggle('abierto'); }
-
-        function agregarAlCarrito(id) {
-            const p = productos.find(prod => prod.id == id);
-            carrito.push(p);
-            document.getElementById('contador').innerText = carrito.length;
-            actualizarCarrito();
+        function agregar(id) {
+            const prod = productos.find(x => x.id == id);
+            carrito.push(prod);
+            actualizarUI();
         }
 
-        function actualizarCarrito() {
-            const items = document.getElementById('items-carrito');
-            items.innerHTML = '';
-            carrito.forEach(i => {
-                items.innerHTML += `<p>${i.nombre} - $${i.precio}</p>`;
+        function actualizarUI() {
+            document.getElementById('cart-count').innerText = carrito.length;
+            document.getElementById('cart-total').innerText = carrito.length;
+            document.getElementById('carrito-flotante').style.display = carrito.length > 0 ? "block" : "none";
+        }
+
+        function enviarPedido() {
+            let mensaje = "Hola Bruno! Quiero consultar por estos repuestos:\n\n";
+            carrito.forEach(p => {
+                mensaje += `- ${p.nombre} ($${p.precio})\n`;
             });
+            const url = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
         }
 
-        function enviarWhatsApp() {
-            let texto = "Hola Bruno, quiero estos repuestos:\n";
-            carrito.forEach(i => texto += `- ${i.nombre}\n`);
-            window.open(`https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(texto)}`);
-        }
-
-        cargarDatos();
+        obtenerProductos();
     </script>
 </body>
 </html>
