@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bruno Repuestos | Catálogo Oficial</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #ef4444; 
+            --text: #f8fafc;
+            --whatsapp: #22c55e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); scroll-behavior: smooth; overflow-x: hidden; }
+
+        /* HEADER */
+        header { 
+            position: sticky; top: 0; z-index: 1000; background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 5%; display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-family: 'Oswald', sans-serif; font-size: 1.6rem; letter-spacing: 1px; color: var(--text); text-transform: uppercase; }
+        .logo span { color: var(--accent); }
+        nav a { color: var(--text); text-decoration: none; margin-left: 20px; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; }
+
+        /* CARRUSEL */
+        .swiper { width: 100%; height: 500px; background: #000; }
+        .swiper-slide { position: relative; display: flex; align-items: center; justify-content: center; }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4); }
+        .slide-txt { position: absolute; text-align: center; max-width: 800px; padding: 0 20px; z-index: 10; }
+        .slide-txt h2 { font-size: 3.5rem; font-family: 'Oswald'; text-transform: uppercase; margin-bottom: 10px; line-height: 1.1; color: #fff; }
+        .slide-txt p { font-size: 1.3rem; color: #cbd5e1; font-weight: 300; }
+
+        /* BUSCADOR */
+        .search-box { padding: 40px 5%; background: #111827; text-align: center; }
+        #buscador {
+            width: 100%; max-width: 600px; padding: 18px 35px; border-radius: 50px;
+            border: 2px solid rgba(255,255,255,0.1); background: var(--bg);
+            color: white; font-size: 1.1rem; transition: 0.4s; text-align: center;
+        }
+        #buscador:focus { border-color: var(--accent); box-shadow: 0 0 25px rgba(239, 68, 68, 0.3); }
+
+        /* PRODUCTOS */
+        .container { padding: 50px 5%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .card { 
+            background: var(--card); border-radius: 24px; overflow: hidden; 
+            border: 1px solid rgba(255,255,255,0.05); transition: 0.4s;
+            display: flex; flex-direction: column;
+        }
+        .card:hover { transform: translateY(-12px); border-color: var(--accent); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .card img { width: 100%; height: 260px; object-fit: cover; }
+        .card-body { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-body h3 { font-size: 1.25rem; margin-bottom: 8px; font-weight: 700; color: #fff; }
+        .desc { color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px; }
+        .precio { font-size: 2.1rem; font-weight: 900; color: var(--accent); margin-bottom: 20px; }
+        
+        .btn-add { 
+            background: var(--accent); color: white; border: none; padding: 16px; 
+            border-radius: 14px; width: 100%; font-weight: 800; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            transition: 0.3s; margin-top: auto;
+        }
+        .btn-add:hover { filter: brightness(1.2); }
+
+        /* CONTACTO */
+        .contacto { padding: 100px 5%; background: #020617; text-align: center; }
+        .socials { display: flex; justify-content: center; gap: 40px; margin-top: 40px; font-size: 2.2rem; }
+        .socials i { color: var(--accent); cursor: pointer; transition: 0.3s; }
+
+        /* CARRITO FLOTANTE */
+        .cart-btn {
+            position: fixed; bottom: 35px; right: 35px; 
+            background: var(--whatsapp); width: 75px; height: 75px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); cursor: pointer; z-index: 1001;
+        }
+        #badge { position: absolute; top: 2px; right: 2px; background: white; color: var(--bg); font-weight: 900; padding: 5px 11px; border-radius: 50%; font-size: 14px; }
+
+        footer { padding: 60px; text-align: center; color: #64748b; font-size: 0.85rem; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">BRUNO<span>.REPUESTOS</span></div>
+        <nav>
+            <a href="#inicio">Inicio</a>
+            <a href="#catalogo">Catálogo</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+    </header>
+
+    <div class="swiper" id="inicio">
+        <div class="swiper-wrapper" id="slider-content"></div>
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <section class="search-box">
+        <input type="text" id="buscador" placeholder="¿Qué estás buscando hoy?" onkeyup="buscar()">
+    </section>
+
+    <main class="container" id="catalogo">
+        <div class="grid" id="lista-productos"></div>
+    </main>
+
+    <section class="contacto" id="contacto">
+        <h2>CONTACTO</h2>
+        <div class="socials">
+            <i class="fab fa-whatsapp" onclick="window.open('https://wa.me/5492281310771')"></i>
+            <i class="fas fa-map-marker-alt" title="Benito Juárez"></i>
+        </div>
+    </section>
+
+    <footer>UPDATE STUDIO &copy; 2026</footer>
+
+    <div class="cart-btn" onclick="enviarWhatsApp()">
+        <i class="fas fa-shopping-basket fa-lg" style="color:white"></i>
+        <span id="badge">0</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyG1L0CFsEZg4jOgYJwx14jol83SKjl54PCnCgsx9TM7MqWOb4E4GsqCsmtPma-Wxg5/exec';
+        let productos = [];
+        let carrito = [];
+
+        async function cargar() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                
+                // Carrusel
+                document.getElementById('slider-content').innerHTML = data.carrusel.map(c => `
+                    <div class="swiper-slide">
+                        <img src="${c.img}" alt="Banner">
+                        <div class="slide-txt"><h2>${c.titulo || ''}</h2><p>${c.subtitulo || ''}</p></div>
+                    </div>
+                `).join('');
+                new Swiper('.swiper', { pagination: { el: '.swiper-pagination' }, autoplay: { delay: 5000 }, loop: true });
+
+                // Productos
+                productos = data.productos;
+                render(productos);
+            } catch (e) { console.error(e); }
+        }
+
+        function render(l) {
+            document.getElementById('lista-productos').innerHTML = l.map(p => `
+                <div class="card">
+                    <img src="${p.img || 'https://via.placeholder.com/400x300'}" alt="${p.nombre}">
+                    <div class="card-body">
+                        <h3>${p.nombre}</h3>
+                        <p class="desc">${p.descripcion || ''}</p>
+                        <div class="precio">$${Number(p.precio).toLocaleString('es-AR')}</div>
+                        <button class="btn-add" onclick="agregar(${p.id})">AGREGAR</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function buscar() {
+            const q = document.getElementById('buscador').value.toLowerCase();
+            render(productos.filter(p => p.nombre.toLowerCase().includes(q)));
+        }
+
+        function agregar(id) {
+            carrito.push(productos.find(x => x.id == id));
+            document.getElementById('badge').innerText = carrito.length;
+        }
+
+        function enviarWhatsApp() {
+            if (!carrito.length) return alert("Carrito vacío");
+            let t = 0;
+            let m = "Hola Bruno! Pedido:\n";
+            carrito.forEach(i => { m += `• ${i.nombre} ($${i.precio})\n`; t += Number(i.precio); });
+            window.open(`https://wa.me/5492281310771?text=${encodeURIComponent(m + "\nTotal: $" + t)}`);
+        }
+        cargar();
+    </script>
+</body>
+</html>
