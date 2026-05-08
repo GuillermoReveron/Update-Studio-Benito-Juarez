@@ -1,0 +1,341 @@
+let carruselInterval; 
+
+        function obtenerLinkDirectoDrive(url) {
+            if (!url) return 'https://via.placeholder.com/400x350?text=Sin+Imagen';
+            const idMatch = url.match(/[-\w]{25,}/);
+            if (url.includes('drive.google.com') && idMatch) {
+                return `https://drive.google.com/uc?export=view&id=${idMatch[0]}`;
+            }
+            if (url.includes('github.com') && url.includes('/blob/')) {
+                let urlLimpia = url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+                urlLimpia = urlLimpia.split('?')[0]; 
+                return urlLimpia;
+            }
+            return url;
+        }
+
+        // --- CEREBRO DETECTOR DE COLORES ---
+        function obtenerColorPromo(texto) {
+            if (!texto) return 'var(--color-acento)'; 
+            const t = texto.toLowerCase();
+            
+            if (t.includes('navidad') || t.includes('fiesta') || t.includes('noel')) return '#c8102e'; 
+            if (t.includes('madre') || t.includes('mujer') || t.includes('mamá')) return '#e83e8c'; 
+            if (t.includes('padre') || t.includes('hombre') || t.includes('papá')) return '#1A5276'; 
+            if (t.includes('oferta') || t.includes('liquidación') || t.includes('off') || t.includes('black')) return '#ff5722'; 
+            
+            return 'var(--color-acento)'; 
+        }
+
+        // --- TU CONEXIÓN CON GOOGLE SHEETS ---
+        const urlAPI = 'https://script.google.com/macros/s/AKfycbwm6g9whIeELxg2Pa0tYN79-XIww8WlGYjSxbhR-KmSNlyNUxIQyCoD7uvmgHo0dRIJuA/exec';
+        let productos = []; 
+        let carrito = [];
+        let compraTemporal = [];
+
+        async function cargarDatosDesdeGoogle() {
+            try {
+                const respuesta = await fetch(urlAPI, { redirect: "follow" });
+                
+                if (!respuesta.ok) {
+                    throw new Error(`Google bloqueó la conexión (Error ${respuesta.status}).`);
+                }
+
+                const textoCrudo = await respuesta.text(); 
+                
+                try {
+                    const data = JSON.parse(textoCrudo); 
+                    
+                    if (Array.isArray(data)) {
+                        productos = data;
+                        dibujarCarruselPorDefecto(); 
+                    } else {
+                        productos = data.productos || [];
+                        if (data.carrusel && data.carrusel.length > 0) {
+                            dibujarCarruselDesdeSheets(data.carrusel);
+                        } else {
+                            dibujarCarruselPorDefecto(); 
+                        }
+                    }
+                    
+                    if(productos.length === 0) {
+                        document.getElementById('contenedor-productos').innerHTML = '<p class="cargando">Todavía no hay productos cargados en el catálogo.</p>';
+                        return;
+                    }
+                    
+                    dibujarCatalogo();
+
+                } catch (errorParseo) {
+                    document.getElementById('contenedor-productos').innerHTML = `<div style="color:red; padding:20px; border:2px solid red; background:white;"><b>Error de Datos:</b> Google no envió los productos, envió una página de error. Revisa los permisos de Apps Script.</div>`;
+                    console.error("Respuesta de Google:", textoCrudo);
+                }
+
+            } catch (error) {
+                document.getElementById('contenedor-productos').innerHTML = `<div style="color:red; padding:20px; border:2px solid red; background:white;"><b>Error de Conexión:</b> ${error.message} <br>Esto significa que Google bloqueó a GitHub. Hacé una "Nueva implementación" en Apps Script asegurándote de elegir "Cualquier persona".</div>`;
+            }
+        }
+
+        function dibujarCarruselDesdeSheets(slides) {
+            const contenedor = document.getElementById('contenedor-carrusel');
+            contenedor.innerHTML = ''; 
+            
+            slides.forEach((s, index) => {
+                const imgDirecta = obtenerLinkDirectoDrive(s.img);
+                const claseActivo = index === 0 ? 'activo' : ''; 
+                
+                contenedor.innerHTML += `
+                    <div class="slide ${claseActivo}" style="background-image: url('${imgDirecta}');">
+                        <div class="slide-texto">
+                            <h2>${s.titulo || ''}</h2>
+                            <p>${s.descripcion || ''}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            iniciarAnimacionCarrusel();
+        }
+
+        function dibujarCarruselPorDefecto() {
+            const contenedor = document.getElementById('contenedor-carrusel');
+            contenedor.innerHTML = `
+                <div class="slide activo" style="background-image: url('https://images.unsplash.com/photo-1615397323136-1288ed3d5964?q=80&w=1400&auto=format&fit=crop');">
+                    <div class="slide-texto">
+                        <h2>Esencia Natural</h2>
+                        <p>Descubrí la nueva línea de hidratación</p>
+                    </div>
+                </div>
+                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=1400&auto=format&fit=crop');">
+                    <div class="slide-texto">
+                        <h2>Cuidado Premium</h2>
+                        <p>Fórmulas exclusivas para tu piel</p>
+                    </div>
+                </div>
+            `;
+            iniciarAnimacionCarrusel();
+        }
+
+        function iniciarAnimacionCarrusel() {
+            let slideIndex = 0;
+            const slides = document.querySelectorAll('.slide');
+            if(slides.length <= 1) return; 
+            
+            if(carruselInterval) clearInterval(carruselInterval);
+            
+            carruselInterval = setInterval(() => {
+                slides.forEach(slide => slide.classList.remove('activo'));
+                slideIndex++;
+                if (slideIndex >= slides.length) { slideIndex = 0; }
+                slides[slideIndex].classList.add('activo');
+            }, 4000); 
+        }
+
+        function dibujarCatalogo() {
+            const contenedorCatalogo = document.getElementById('contenedor-productos');
+            const seccionDestacados = document.getElementById('seccion-destacado');
+            const contenedorDestacados = document.getElementById('contenedor-destacados');
+            const tituloDestacado = document.getElementById('titulo-destacado');
+            
+            contenedorCatalogo.innerHTML = ''; 
+            contenedorDestacados.innerHTML = '';
+            seccionDestacados.style.display = 'none';
+
+            const productosEspeciales = productos.filter(p => p.destacado && String(p.destacado).trim() !== '' && String(p.destacado).trim().toUpperCase() !== 'NO');
+
+            if (productosEspeciales.length > 0) {
+                seccionDestacados.style.display = 'block'; 
+                
+                let nombreEventoPrincipal = String(productosEspeciales[0].destacado).trim();
+                let colorTema = obtenerColorPromo(nombreEventoPrincipal);
+                
+                if(nombreEventoPrincipal.toUpperCase() === 'SI') {
+                    tituloDestacado.innerHTML = '<i class="fas fa-gift"></i> Especiales & Promociones <i class="fas fa-gift"></i>';
+                    tituloDestacado.style.color = 'var(--color-acento)';
+                } else {
+                    tituloDestacado.innerHTML = `<i class="fas fa-star"></i> Especial ${nombreEventoPrincipal} <i class="fas fa-star"></i>`;
+                    tituloDestacado.style.color = colorTema;
+                }
+                
+                productosEspeciales.forEach(productoEspecial => {
+                    const precioNumerico = Number(productoEspecial.precio);
+                    const imagenDirecta = obtenerLinkDirectoDrive(productoEspecial.img);
+                    const tieneStock = productoEspecial.stock && String(productoEspecial.stock).trim().toUpperCase() === 'SI';
+                    
+                    let textoEtiqueta = String(productoEspecial.destacado).trim();
+                    if(textoEtiqueta.toUpperCase() === 'SI') {
+                        textoEtiqueta = 'Promo Especial';
+                    }
+                    
+                    let colorTarjeta = obtenerColorPromo(textoEtiqueta);
+
+                    const claseTarjeta = tieneStock ? 'tarjeta-destacado' : 'tarjeta-destacado sin-stock';
+                    
+                    const cartelStock = tieneStock ? `<span class="etiqueta-promo" style="background-color: ${colorTarjeta};"><i class="fas fa-star"></i> ${textoEtiqueta}</span>` : '<div class="badge-stock">Agotado</div>';
+                    
+                    const disableBtn = tieneStock ? '' : 'disabled';
+                    const textoComprar = tieneStock ? 'Aprovechar' : 'Agotado';
+                    const descripcionProducto = productoEspecial.descripcion ? productoEspecial.descripcion : '';
+
+                    contenedorDestacados.innerHTML += `
+                        <div class="${claseTarjeta}" style="border-top-color: ${colorTarjeta};">
+                            ${cartelStock}
+                            <img src="${imagenDirecta}" alt="${productoEspecial.nombre}">
+                            <h3>${productoEspecial.nombre}</h3>
+                            <p class="descripcion-producto">${descripcionProducto}</p>
+                            <div class="precio">$${precioNumerico.toLocaleString('es-AR')}</div>
+                            <div class="botones-producto">
+                                <button class="btn btn-agregar" onclick="agregarAlCarrito(${productoEspecial.id})" ${disableBtn}><i class="fas fa-plus"></i></button>
+                                <button class="btn btn-comprar" onclick="comprarDirecto(${productoEspecial.id})" ${disableBtn}>${textoComprar}</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            const productosNormales = productos.filter(p => !p.destacado || String(p.destacado).trim() === '' || String(p.destacado).trim().toUpperCase() === 'NO');
+            
+            productosNormales.forEach(prod => {
+                const precioNumerico = Number(prod.precio);
+                const imagenDirecta = obtenerLinkDirectoDrive(prod.img);
+                const tieneStock = prod.stock && String(prod.stock).trim().toUpperCase() === 'SI';
+                
+                const claseTarjeta = tieneStock ? 'tarjeta' : 'tarjeta sin-stock';
+                const cartelStock = tieneStock ? '' : '<div class="badge-stock">Sin Stock</div>';
+                const disableBtn = tieneStock ? '' : 'disabled';
+                const textoComprar = tieneStock ? 'Comprar Ahora' : 'Agotado';
+                const descripcionProducto = prod.descripcion ? prod.descripcion : '';
+                
+                contenedorCatalogo.innerHTML += `
+                    <div class="${claseTarjeta}">
+                        ${cartelStock}
+                        <img src="${imagenDirecta}" alt="${prod.nombre}">
+                        <h3>${prod.nombre}</h3>
+                        <p class="descripcion-producto">${descripcionProducto}</p>
+                        <div class="precio">$${precioNumerico.toLocaleString('es-AR')}</div>
+                        <div class="botones-producto">
+                            <button class="btn btn-agregar" onclick="agregarAlCarrito(${prod.id})" ${disableBtn}><i class="fas fa-plus"></i> Al Bolso</button>
+                            <button class="btn btn-comprar" onclick="comprarDirecto(${prod.id})" ${disableBtn}>${textoComprar}</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleCarrito() {
+            document.getElementById('carrito-lateral').classList.toggle('abierto');
+        }
+
+        function agregarAlCarrito(id) {
+            const producto = productos.find(p => String(p.id) === String(id));
+            if(producto) {
+                carrito.push(producto);
+                actualizarCarrito();
+                document.getElementById('carrito-lateral').classList.add('abierto');
+            }
+        }
+
+        function actualizarCarrito() {
+            const contenedorItems = document.getElementById('items-carrito');
+            contenedorItems.innerHTML = '';
+            let total = 0;
+            carrito.forEach((item, index) => {
+                total += Number(item.precio);
+                
+                let etiquetaPromoCarrito = "";
+                if (item.destacado && String(item.destacado).trim() !== '' && String(item.destacado).trim().toUpperCase() !== 'NO') {
+                    let nombrePromo = String(item.destacado).trim();
+                    if(nombrePromo.toUpperCase() === 'SI') nombrePromo = 'Promo';
+                    
+                    let colorPromo = obtenerColorPromo(nombrePromo);
+                    etiquetaPromoCarrito = `<br><span style="color:${colorPromo}; font-size:0.8em; font-weight:bold;">[${nombrePromo}]</span>`;
+                }
+
+                contenedorItems.innerHTML += `
+                    <div class="item-carrito">
+                        <span class="item-nombre">${item.nombre}${etiquetaPromoCarrito}</span>
+                        <span>$${Number(item.precio).toLocaleString('es-AR')} <i class="fas fa-trash" style="cursor:pointer; color:#cc0000; margin-left:10px;" onclick="eliminarDelCarrito(${index})"></i></span>
+                    </div>
+                `;
+            });
+            document.getElementById('precio-total').innerText = total.toLocaleString('es-AR');
+            document.getElementById('contador').innerText = carrito.length;
+        }
+
+        function eliminarDelCarrito(index) {
+            carrito.splice(index, 1);
+            actualizarCarrito();
+        }
+
+        const modalPago = document.getElementById('modal-pago');
+
+        function cerrarModalPago() {
+            modalPago.classList.remove('activo');
+        }
+
+        function actualizarQRDinamico() {
+            const contenedorQR = document.getElementById('contenedor-qr');
+            const imgQR = document.getElementById('qr-dinamico');
+            
+            if (compraTemporal.length === 1 && compraTemporal[0].linkpago && compraTemporal[0].linkpago.trim() !== '') {
+                imgQR.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(compraTemporal[0].linkpago)}`;
+                contenedorQR.style.display = 'block';
+            } else {
+                contenedorQR.style.display = 'none';
+            }
+        }
+
+        function comprarDirecto(id) {
+            const producto = productos.find(p => String(p.id) === String(id));
+            if(producto) {
+                compraTemporal = [producto];
+                document.getElementById('monto-final').innerText = Number(producto.precio).toLocaleString('es-AR');
+                actualizarQRDinamico();
+                modalPago.classList.add('activo');
+            }
+        }
+
+        function abrirModalPagoDesdeCarrito() {
+            if (carrito.length === 0) {
+                alert("Tu carrito está vacío.");
+                return;
+            }
+            compraTemporal = [...carrito];
+            let total = carrito.reduce((sum, item) => sum + Number(item.precio), 0);
+            document.getElementById('monto-final').innerText = total.toLocaleString('es-AR');
+            actualizarQRDinamico();
+            document.getElementById('carrito-lateral').classList.remove('abierto');
+            modalPago.classList.add('activo');
+        }
+
+        function enviarComprobanteWhatsApp() {
+            let totalCompra = compraTemporal.reduce((sum, item) => sum + Number(item.precio), 0);
+            
+            let texto = "Hola Cecilia, acabo de realizar una compra y te escribo para pasarte el comprobante de pago.\n\n";
+            texto += "*🛒 Detalle de mi pedido:*\n";
+            
+            compraTemporal.forEach(item => {
+                let etiquetaPromoWa = "";
+                if (item.destacado && String(item.destacado).trim() !== '' && String(item.destacado).trim().toUpperCase() !== 'NO') {
+                    let nombrePromo = String(item.destacado).trim();
+                    if(nombrePromo.toUpperCase() === 'SI') nombrePromo = 'Promo Especial';
+                    etiquetaPromoWa = ` *(Promo: ${nombrePromo})*`;
+                }
+
+                texto += `- ${item.nombre}${etiquetaPromoWa} ($${Number(item.precio).toLocaleString('es-AR')})\n`;
+            });
+
+            texto += `\n*💰 Total abonado:* $${totalCompra.toLocaleString('es-AR')}\n\n`;
+            texto += "A continuación adjunto la foto del comprobante de transferencia/QR. ¡Avisame cuando lo veas para coordinar la entrega! 📄✅";
+
+            let numeroWhatsapp = "5492281310771"; 
+            
+            let url = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(texto)}`;
+            window.open(url, '_blank');
+            
+            cerrarModalPago();
+            carrito = [];
+            actualizarCarrito();
+        }
+
+        // ¡ACÁ ESTABA EL SECRETO! LA ORDEN DE ARRANQUE:
+        cargarDatosDesdeGoogle();
