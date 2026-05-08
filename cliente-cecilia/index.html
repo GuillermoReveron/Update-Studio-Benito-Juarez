@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cecilia Llanos | Alta Cosmética</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --color-fondo: #ffffff;
+            --color-texto: #1a1a1a;
+            --color-acento: #d4af37;
+            --color-secundario: #f4f4f4;
+            --color-whatsapp: #25D366;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--color-fondo); color: var(--color-texto); overflow-x: hidden; }
+        h1, h2, h3, .logo { font-family: 'Playfair Display', serif; }
+
+        /* HEADER */
+        header { position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); z-index: 1000; border-bottom: 1px solid #eee; }
+        .top-bar { background-color: var(--color-texto); color: var(--color-acento); text-align: center; padding: 10px; font-size: 0.85em; letter-spacing: 1px; font-weight: 600; text-transform: uppercase;}
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; }
+        .logo { font-size: 2em; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; color: var(--color-texto); }
+        .menu a { text-decoration: none; color: var(--color-texto); margin: 0 15px; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+        .menu a:hover { color: var(--color-acento); }
+        .iconos-nav { position: relative; cursor: pointer; }
+        .contador-carrito { position: absolute; top: -8px; right: -10px; background: var(--color-acento); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7em; font-weight: bold; }
+
+        /* CARRUSEL */
+        .carrusel-contenedor { position: relative; height: 60vh; width: 100%; overflow: hidden; background-color: #000; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+        .slide.activo { opacity: 1; }
+        .slide-texto { text-align: center; color: white; background: rgba(0,0,0,0.3); padding: 30px 50px; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(2px); }
+        .slide-texto h2 { font-size: 3em; margin-bottom: 10px; font-weight: 400; }
+
+        /* CATALOGO */
+        .seccion-padding { padding: 60px 5%; min-height: 400px; }
+        .grid-productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; }
+        .tarjeta { position: relative; text-align: center; transition: transform 0.3s; border: 1px solid #eee; padding-bottom: 20px; border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .tarjeta img { width: 100%; height: 350px; object-fit: cover; margin-bottom: 15px; }
+        
+        .badge-stock { position: absolute; top: 15px; left: 15px; background-color: #d9534f; color: white; padding: 5px 12px; border-radius: 4px; font-size: 0.75em; font-weight: bold; z-index: 2; text-transform: uppercase;}
+        .sin-stock img { filter: grayscale(100%); opacity: 0.6; }
+
+        .botones-producto { display: flex; gap: 10px; padding: 0 15px; }
+        .btn { flex: 1; padding: 12px 10px; border: none; text-transform: uppercase; font-size: 0.75em; font-weight: 600; cursor: pointer; border-radius: 4px; transition: background-color 0.3s, color 0.3s; }
+        .btn-comprar { background-color: var(--color-texto); color: white; }
+        .btn-comprar:hover { background-color: var(--color-acento); }
+        .btn-agregar { background-color: transparent; border: 1px solid var(--color-texto); color: var(--color-texto); }
+        .btn-agregar:hover { background-color: var(--color-texto); color: white; }
+
+        /* CARRITO LATERAL */
+        .carrito-lateral { position: fixed; top: 0; right: -400px; width: 350px; height: 100vh; background: white; box-shadow: -2px 0 10px rgba(0,0,0,0.1); transition: right 0.3s ease; z-index: 2000; padding: 20px; display: flex; flex-direction: column; }
+        .carrito-lateral.abierto { right: 0; }
+
+        footer { background-color: var(--color-texto); color: white; padding: 60px 5% 20px; text-align: center; }
+    </style>
+</head>
+<body id="arriba">
+
+    <div class="top-bar">Cecilia Llanos | Alta Cosmética Profesional</div>
+
+    <header>
+        <nav class="navbar">
+            <div class="menu">
+                <a href="#arriba">Inicio</a>
+                <a href="#catalogo">Catálogo</a>
+                <a href="#contacto">Contacto</a>
+            </div>
+            <a href="#arriba" class="logo">Cecilia Llanos</a>
+            <div class="iconos-nav" onclick="toggleCarrito()">
+                <i class="fas fa-shopping-bag fa-lg"></i>
+                <span class="contador-carrito" id="contador">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <section id="contenedor-carrusel" class="carrusel-contenedor"></section>
+
+    <section id="catalogo" class="seccion-padding">
+        <h2 style="text-align: center; font-size
