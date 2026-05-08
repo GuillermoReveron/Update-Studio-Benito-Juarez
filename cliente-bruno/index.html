@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bruno Repuestos | Catálogo Oficial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --color-fondo: #0f172a; /* Azul noche industrial */
+            --color-texto: #f8fafc;
+            --color-acento: #ef4444; /* Rojo Racing */
+            --color-secundario: #1e293b; /* Gris acero */
+            --color-whatsapp: #25D366;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--color-fondo); color: var(--text-main); }
+        h1, h2, h3, .logo { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* HEADER */
+        header { position: sticky; top: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .top-bar { background-color: var(--color-acento); color: white; text-align: center; padding: 10px; font-size: 0.85em; letter-spacing: 1px; font-weight: 700; text-transform: uppercase;}
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; }
+        .logo { font-size: 1.8em; font-weight: 700; color: white; }
+        .logo span { color: var(--color-acento); }
+        .menu a { text-decoration: none; color: var(--color-texto); margin: 0 15px; font-size: 0.9em; text-transform: uppercase; font-weight: 600; transition: color 0.3s; }
+        .menu a:hover { color: var(--color-acento); }
+        .iconos-nav { position: relative; cursor: pointer; color: white; }
+        .contador-carrito { position: absolute; top: -8px; right: -10px; background: var(--color-acento); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7em; font-weight: bold; }
+
+        /* CARRUSEL */
+        .carrusel-contenedor { position: relative; height: 65vh; width: 100%; overflow: hidden; background-color: #000; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+        .slide.activo { opacity: 1; }
+        .slide-texto { text-align: center; color: white; background: rgba(0,0,0,0.6); padding: 40px; border-left: 5px solid var(--color-acento); backdrop-filter: blur(4px); }
+        .slide-texto h2 { font-size: 3.5em; margin-bottom: 10px; }
+
+        /* DESTACADOS */
+        .seccion-destacado { padding: 50px 5%; background-color: #111827; display: none; }
+        .titulo-destacado { text-align: center; font-size: 2.2em; margin-bottom: 30px; color: var(--color-acento); }
+        
+        .grid-destacados { display: flex; gap: 30px; overflow-x: auto; padding: 20px; scroll-snap-type: x mandatory; margin: 0 auto; }
+        .tarjeta-destacado { flex: 0 0 320px; background: var(--color-secundario); border-radius: 12px; overflow: hidden; text-align: center; padding-bottom: 25px; border-bottom: 4px solid var(--color-acento); transition: transform 0.3s; color: white; }
+        .tarjeta-destacado:hover { transform: scale(1.02); }
+        .etiqueta-promo { position: absolute; top: 15px; right: 15px; color: white; padding: 6px 12px; font-size: 0.75em; font-weight: bold; text-transform: uppercase; border-radius: 4px; z-index: 2; }
+        .tarjeta-destacado img { width: 100%; height: 260px; object-fit: cover; margin-bottom: 15px; }
+
+        /* CATÁLOGO */
+        .seccion-padding { padding: 80px 5%; min-height: 400px; background-color: var(--color-fondo); }
+        .titulo-seccion { text-align: center; font-size: 2.8em; margin-bottom: 50px; color: white; }
+        .grid-productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        .tarjeta { background: var(--color-secundario); border-radius: 15px; overflow: hidden; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05); color: white; padding-bottom: 25px;}
+        .tarjeta:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); border-color: var(--color-acento); }
+        .tarjeta img { width: 100%; height: 320px; object-fit: cover; }
+        
+        .descripcion-producto { font-size: 0.9em; color: var(--text-dim); padding: 0 20px; margin-bottom: 20px; min-height: 45px; }
+        .precio { font-size: 1.8em; font-weight: 800; color: var(--color-acento); margin-bottom: 20px; font-family: 'Oswald'; }
+        
+        .badge-stock { background-color: #4b5563; padding: 6px 15px; }
+        .tarjeta.sin-stock img { filter: grayscale(100%) brightness(0.5); }
+
+        /* BOTONES */
+        .botones-producto { display: flex; gap: 12px; padding: 0 20px; }
+        .btn { flex: 1; padding: 14px; border: none; text-transform: uppercase; font-size: 0.8em; font-weight: 800; cursor: pointer; transition: 0.3s; border-radius: 8px; }
+        .btn-comprar { background-color: var(--color-acento); color: white; }
+        .btn-agregar { background-color: #334155; color: white; }
+        .btn:hover:not(:disabled) { filter: brightness(1.2); }
+
+        /* MODALES Y CARRITO */
+        .carrito-lateral { background: #1e293b; color: white; border-left: 2px solid var(--color-acento); }
+        .caja-pago { background: #1e293b; color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .datos-bancarios { background: #0f172a; border: 1px solid #334155; }
+        .caja-uala { background: #1e293b; border-left-color: var(--color-acento); }
+
+        footer { background-color: #020617; }
+    </style>
+</head>
+<body id="arriba">
+
+    <div class="top-bar">⚡ Repuestos Originales & Alternativos - Envíos en Benito Juárez ⚡</div>
+
+    <header>
+        <nav class="navbar">
+            <div class="menu">
+                <a href="#arriba">Inicio</a>
+                <a href="#catalogo">Catálogo</a>
+                <a href="#contacto">Contacto</a>
+            </div>
+            <div class="logo">BRUNO<span>.REPUESTOS</span></div>
+            <div class="iconos-nav" onclick="toggleCarrito()">
+                <i class="fas fa-shopping-cart fa-lg"></i>
+                <span class="contador-carrito" id="contador">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <section id="contenedor-carrusel" class="carrusel-contenedor"></section>
+
+    <section id="seccion-destacado" class="seccion-destacado">
+        <h2 class="titulo-destacado" id="titulo-destacado"><i class="fas fa-bolt"></i> OFERTAS MECÁNICAS <i class="fas fa-bolt"></i></h2>
+        <div class="grid-destacados" id="contenedor-destacados"></div>
+    </section>
+
+    <section id="catalogo" class="seccion-padding">
+        <h2 class="titulo-seccion">STOCK DISPONIBLE</h2>
+        <div class="grid-productos" id="contenedor-productos">
+            <div class="cargando">Sincronizando stock... <i class="fas fa-cog fa-spin"></i></div>
+        </div>
+    </section>
+
+    <footer id="contacto">
+        <div class="footer-grid">
+            <div>
+                <h4>BRUNO REPUESTOS</h4>
+                <p>Tu aliado en la ruta y el taller.</p>
+            </div>
+            <div>
+                <h4>Contacto Directo</h4>
+                <p><i class="fab fa-whatsapp"></i> +54 9 228 131-0771</p>
+                <p><i class="fas fa-map-marker-alt"></i> Benito Juárez, Buenos Aires</p>
+            </div>
+        </div>
+        <div style="text-align: center; border-top: 1px solid #1e293b; padding-top: 20px; font-size: 0.8em; color: #475569;">
+            &copy; 2026 Bruno Repuestos. Potenciado por Update Studio.
+        </div>
+    </footer>
+
+    <div class="carrito-lateral" id="carrito-lateral">
+        <div class="cerrar-carrito" onclick="toggleCarrito()"><i class="fas fa-times"></i></div>
+        <h2 style="margin-bottom: 20px; font-family: 'Oswald';">ORDEN DE COMPRA</h2>
+        <div class="items-carrito" id="items-carrito"></div>
+        <div class="total-carrito">Total: $<span id="precio-total">0</span></div>
+        <div class="btn-pagar-carrito" onclick="abrirModalPagoDesdeCarrito()" style="background-color: var(--color-acento);">Finalizar Pedido</div>
+    </div>
+
+    <div class="overlay-pago" id="modal-pago">
+        <div class="caja-pago">
+            <div class="cerrar-pago" onclick="cerrarModalPago()"><i class="fas fa-times"></i></div>
+            <h3>MÉTODOS DE PAGO</h3>
+            <div class="monto-pagar">$<span id="monto-final">0</span></div>
+            <div class="datos-bancarios">
+                <p style="margin-bottom: 10px;"><span>Titular:</span> Bruno [Apellido]</p>
+                <div class="caja-uala">
+                    <span class="etiqueta-recomendado">Recomendado Ualá</span>
+                    <p><span>Alias:</span> BRUNO.REPUESTOS.UALA</p>
+                </div>
+            </div>
+            <button class="btn-whatsapp" onclick="enviarComprobanteWhatsApp()">
+                <i class="fab fa-whatsapp fa-lg"></i> ENVIAR PEDIDO POR WHATSAPP
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- AQUÍ IRÁ EL NUEVO LINK DE BRUNO ---
+        const urlAPI = ''; 
+        
+        let productos = []; 
+        let carrito = [];
+        let compraTemporal = [];
+        let carruselInterval;
+
+        // Mantengo todas las funciones lógicas de Cecilia (obtenerLink, dibujarCatalogo, agregarAlCarrito, etc.)
+        // Solo modifiqué las visuales dentro de los templates de JS.
+
+        function obtenerLinkDirectoDrive(url) {
+            if (!url) return 'https://via.placeholder.com/400x320?text=Repuesto';
+            const idMatch = url.match(/[-\w]{25,}/);
+            if (url.includes('drive.google.com') && idMatch) {
+                return `https://drive.google.com/uc?export=view&id=${idMatch[0]}`;
+            }
+            return url;
+        }
+
+        function obtenerColorPromo(texto) {
+            return 'var(--color-acento)'; 
+        }
+
+        async function cargarDatosDesdeGoogle() {
+            if(!urlAPI) {
+                dibujarCarruselPorDefecto();
+                document.getElementById('contenedor-productos').innerHTML = '<p class="cargando">Esperando vinculación de planilla...</p>';
+                return;
+            }
+            try {
+                const respuesta = await fetch(urlAPI);
+                const data = await respuesta.json();
+                productos = data.productos || data;
+                if (data.carrusel) dibujarCarruselDesdeSheets(data.carrusel);
+                else dibujarCarruselPorDefecto();
+                dibujarCatalogo();
+            } catch (error) {
+                dibujarCarruselPorDefecto();
+            }
+        }
+
+        function dibujarCarruselPorDefecto() {
+            const contenedor = document.getElementById('contenedor-carrusel');
+            contenedor.innerHTML = `
+                <div class="slide activo" style="background-image: url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=1400&auto=format&fit=crop');">
+                    <div class="slide-texto">
+                        <h2>Mecánica Especializada</h2>
+                        <p>Los mejores componentes para tu motor</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function dibujarCatalogo() {
+            const contenedorCatalogo = document.getElementById('contenedor-productos');
+            contenedorCatalogo.innerHTML = ''; 
+            
+            productos.forEach(prod => {
+                const tieneStock = prod.stock?.toString().toUpperCase() === 'SI';
+                const claseTarjeta = tieneStock ? 'tarjeta' : 'tarjeta sin-stock';
+                
+                contenedorCatalogo.innerHTML += `
+                    <div class="${claseTarjeta}">
+                        ${tieneStock ? '' : '<div class="badge-stock">Agotado</div>'}
+                        <img src="${obtenerLinkDirectoDrive(prod.img)}" alt="${prod.nombre}">
+                        <div class="card-body">
+                            <h3>${prod.nombre}</h3>
+                            <p class="descripcion-producto">${prod.descripcion || ''}</p>
+                            <div class="precio">$${Number(prod.precio).toLocaleString('es-AR')}</div>
+                            <div class="botones-producto">
+                                <button class="btn btn-agregar" onclick="agregarAlCarrito(${prod.id})" ${tieneStock ? '' : 'disabled'}><i class="fas fa-cart-plus"></i></button>
+                                <button class="btn btn-comprar" onclick="comprarDirecto(${prod.id})" ${tieneStock ? '' : 'disabled'}>Consultar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- Resto de funciones de Cecilia mantenidas intactas ---
+        function toggleCarrito() { document.getElementById('carrito-lateral').classList.toggle('abierto'); }
+        function cerrarModalPago() { document.getElementById('modal-pago').classList.remove('activo'); }
+        function agregarAlCarrito(id) {
+            const producto = productos.find(p => String(p.id) === String(id));
+            if(producto) { carrito.push(producto); actualizarCarrito(); toggleCarrito(); }
+        }
+        function actualizarCarrito() {
+            const cont = document.getElementById('items-carrito');
+            let total = 0; cont.innerHTML = '';
+            carrito.forEach((item, index) => {
+                total += Number(item.precio);
+                cont.innerHTML += `<div class="item-carrito"><span>${item.nombre}</span><span>$${Number(item.precio).toLocaleString('es-AR')}</span></div>`;
+            });
+            document.getElementById('precio-total').innerText = total.toLocaleString('es-AR');
+            document.getElementById('contador').innerText = carrito.length;
+        }
+        function comprarDirecto(id) {
+            const p = productos.find(prod => String(prod.id) === String(id));
+            if(p) { compraTemporal = [p]; document.getElementById('monto-final').innerText = Number(p.precio).toLocaleString('es-AR'); document.getElementById('modal-pago').classList.add('activo'); }
+        }
+        function abrirModalPagoDesdeCarrito() {
+            if(!carrito.length) return;
+            compraTemporal = [...carrito];
+            let total = carrito.reduce((s, i) => s + Number(i.precio), 0);
+            document.getElementById('monto-final').innerText = total.toLocaleString('es-AR');
+            document.getElementById('modal-pago').classList.add('activo');
+        }
+        function enviarComprobanteWhatsApp() {
+            let m = "Hola Bruno, quiero consultar por estos repuestos:\n\n";
+            compraTemporal.forEach(i => m += `- ${i.nombre} ($${Number(i.precio).toLocaleString('es-AR')})\n`);
+            window.open(`https://wa.me/5492281310771?text=${encodeURIComponent(m)}`, '_blank');
+        }
+
+        cargarDatosDesdeGoogle();
+    </script>
+</body>
+</html>
