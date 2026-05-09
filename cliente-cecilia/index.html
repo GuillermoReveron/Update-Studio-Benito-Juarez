@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cecilia Llanos | Alta Cosmética</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --color-fondo: #ffffff;
+            --color-texto: #1a1a1a;
+            --color-acento: #d4af37;
+            --color-secundario: #f4f4f4;
+            --color-whatsapp: #25D366;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--color-fondo); color: var(--color-texto); line-height: 1.6; }
+        h1, h2, h3, .logo { font-family: 'Playfair Display', serif; }
+
+        /* HEADER */
+        header { position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); z-index: 1000; border-bottom: 1px solid #eee; }
+        .top-bar { background-color: var(--color-texto); color: white; text-align: center; padding: 8px; font-size: 0.8em; letter-spacing: 1px; text-transform: uppercase; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; }
+        .logo { font-size: 1.8em; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--color-texto); text-decoration: none; }
+        .menu a { text-decoration: none; color: var(--color-texto); margin: 0 15px; font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+        .menu a:hover { color: var(--color-acento); }
+        .iconos-nav { display: flex; align-items: center; gap: 20px; }
+        .carrito-icon { position: relative; cursor: pointer; }
+        .contador-carrito { position: absolute; top: -8px; right: -10px; background: var(--color-acento); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7em; font-weight: bold; }
+
+        /* CARRUSEL */
+        .carrusel-contenedor { position: relative; height: 70vh; width: 100%; overflow: hidden; background-color: #000; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+        .slide.activo { opacity: 1; }
+        .slide-texto { text-align: center; color: white; background: rgba(0,0,0,0.3); padding: 40px; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(2px); max-width: 80%; }
+        .slide-texto h2 { font-size: 3.5em; margin-bottom: 10px; font-weight: 400; }
+
+        /* SECCIÓN DESTACADOS */
+        .seccion-destacado { padding: 80px 5%; background-color: var(--color-secundario); display: none; overflow: hidden; }
+        .titulo-destacado { text-align: center; font-family: 'Playfair Display', serif; font-size: 2.5em; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 3px; }
+        .grid-destacados { display: flex; gap: 30px; overflow-x: auto; padding: 20px 10px 40px 10px; scroll-snap-type: x mandatory; }
+        .tarjeta-destacado { flex: 0 0 320px; scroll-snap-align: start; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center; padding-bottom: 25px; border-top: 5px solid var(--color-acento); position: relative; transition: transform 0.3s ease; }
+        .etiqueta-promo { position: absolute; top: 20px; right: 20px; color: white; padding: 6px 12px; font-size: 0.75em; font-weight: bold; text-transform: uppercase; border-radius: 4px; z-index: 10; }
+
+        /* GRID PRODUCTOS */
+        .seccion-padding { padding: 80px 5%; }
+        .grid-productos { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 40px; }
+        .tarjeta { background: white; border: 1px solid #eee; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; position: relative; text-align: center; }
+        .tarjeta img, .tarjeta-destacado img { width: 100%; height: 320px; object-fit: cover; }
+        .descripcion-producto { font-size: 0.9em; color: #666; margin-bottom: 15px; height: 3em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; padding: 0 10px; }
+        
+        /* MEDIOS DE PAGO NIVELADOS */
+        .seccion-pagos { background-color: var(--color-secundario); padding: 60px 5%; text-align: center; }
+        .contenedor-pagos { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 30px; }
+        .metodo-pago { background: white; padding: 20px; border-radius: 10px; border: 1px solid #ddd; flex: 1; min-width: 140px; max-width: 200px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .metodo-pago i { font-size: 1.8em; color: var(--color-texto); }
+        .metodo-pago span { font-weight: 600; font-size: 0.8em; letter-spacing: 1px; }
+
+        /* MODAL PAGO */
+        .overlay-pago { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(5px); }
+        .overlay-pago.activo { display: flex; }
+        .caja-pago { background: white; padding: 40px; border-radius: 15px; width: 90%; max-width: 500px; position: relative; text-align: center; }
+        .bloque-datos { background: var(--color-secundario); padding: 20px; border-radius: 10px; text-align: left; margin: 20px 0; font-size: 0.9em; border: 1px solid #ddd; }
+        
+        .btn-whatsapp { background-color: var(--color-whatsapp); color: white; border: none; padding: 16px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; }
+
+        footer { background: var(--color-texto); color: white; padding: 40px; text-align: center; }
+        .carrito-lateral { position: fixed; top: 0; right: -400px; width: 400px; height: 100vh; background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.1); z-index: 2000; transition: right 0.4s; padding: 20px; display: flex; flex-direction: column; }
+        .carrito-lateral.abierto { right: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">Ualá • Mercado Pago • Cuenta DNI • BNA+</div>
+
+    <header>
+        <nav class="navbar">
+            <div class="menu"><a href="#arriba">Inicio</a><a href="#catalogo">Colección</a></div>
+            <div class="logo">Cecilia Llanos</div>
+            <div class="iconos-nav"><div class="carrito-icon" onclick="toggleCarrito()"><i class="fas fa-shopping-bag fa-lg"></i><span class="contador-carrito" id="contador">0</span></div></div>
+        </nav>
+    </header>
+
+    <section id="contenedor-carrusel" class="carrusel-contenedor"></section>
+    <section id="seccion-destacado" class="seccion-destacado"><h2 class="titulo-destacado">Especiales</h2><div class="grid-destacados" id="contenedor-destacados"></div></section>
+    <section id="catalogo" class="seccion-padding"><div class="grid-productos" id="contenedor-productos"></div></section>
+
+    <section class="seccion-pagos">
+        <h3>Medios de Pago</h3>
+        <div class="contenedor-pagos">
+            <div class="metodo-pago"><i class="fas fa-wallet"></i><span>UALÁ</span></div>
+            <div class="metodo-pago"><i class="fas fa-hand-holding-usd"></i><span>MERCADO PAGO</span></div>
+            <div class="metodo-pago"><i class="fas fa-university"></i><span>CUENTA DNI</span></div>
+            <div class="metodo-pago"><i class="fas fa-credit-card"></i><span>BNA+</span></div>
+        </div>
+    </section>
+
+    <footer>&copy; 2026 Cecilia Llanos | Update Studio</footer>
+
+    <div class="carrito-lateral" id="carrito-lateral">
+        <h2 onclick="toggleCarrito()" style="cursor:pointer">Cerrar X</h2>
+        <div id="items-carrito" style="flex-grow:1"></div>
+        <div style="font-weight:bold; font-size:1.5em">Total: $<span id="precio-total">0</span></div>
+        <button onclick="abrirModalPagoDesdeCarrito()" style="padding:20px; background:black; color:white; border:none; cursor:pointer">PAGAR</button>
+    </div>
+
+    <div class="overlay-pago" id="modal-pago">
+        <div class="caja-pago">
+            <h3 onclick="cerrarModalPago()" style="cursor:pointer">Cerrar X</h3>
+            <div style="font-size: 2.5em; font-weight: bold; margin: 20px 0;">$<span id="monto-final">0</span></div>
+            <div class="bloque-datos">
+                <p><strong>Titular:</strong> Cecilia Llanos</p>
+                <p style="margin-top:10px; border-top:1px solid #ddd; padding-top:10px;"><strong>Ualá / Mercado Pago:</strong><br>Alias: CECILIA.CREMAS.UALA<br>CVU: 00000031000000000000</p>
+                <p style="margin-top:10px; border-top:1px solid #ddd; padding-top:10px;"><strong>Cuenta DNI / BNA+:</strong><br>Alias: CECILIA.BNA.DNI<br>CBU: 01400000000000000000</p>
+            </div>
+            <button class="btn-whatsapp" onclick="enviarComprobanteWhatsApp()">ENVIAR COMPROBANTE</button>
+        </div>
+    </div>
+
+    <script>
+        // ESTO ES LO QUE NO SE DEBE TOCAR PARA QUE NO SE ROMPA
+        const urlAPI = 'https://script.google.com/macros/s/AKfycbwm6g9whIeELxg2Pa0tYN79-XIww8WlGYjSxbhR-KmSNlyNUxIQyCoD7uvmgHo0dRIJuA/exec';
+        let productos = []; let carrito = []; let compraTemporal = [];
+
+        function obtenerLinkDirectoDrive(url) {
+            if (!url) return 'https://via.placeholder.com/400x350';
+            const idMatch = url.match(/[-\w]{25,}/);
+            return (url.includes('drive.google.com') && idMatch) ? `https://drive.google.com/uc?export=view&id=${idMatch[0]}` : url;
+        }
+
+        async function cargarDatosDesdeGoogle() {
+            try {
+                const respuesta = await fetch(urlAPI, { redirect: "follow" });
+                const data = await respuesta.json();
+                productos = data.productos || data;
+                if (data.carrusel) dibujarCarrusel(data.carrusel);
+                dibujarCatalogo();
+            } catch (e) { console.error(e); }
+        }
+
+        function dibujarCarrusel(slides) {
+            const cont = document.getElementById('contenedor-carrusel');
+            cont.innerHTML = slides.map((s, i) => `<div class="slide ${i === 0 ? 'activo' : ''}" style="background-image: url('${obtenerLinkDirectoDrive(s.img)}');"><div class="slide-texto"><h2>${s.titulo || ''}</h2></div></div>`).join('');
+            let idx = 0; const s = document.querySelectorAll('.slide');
+            if(s.length > 1) setInterval(() => { s[idx].classList.remove('activo'); idx = (idx + 1) % s.length; s[idx].classList.add('activo'); }, 4000);
+        }
+
+        function dibujarCatalogo() {
+            const cont = document.getElementById('contenedor-productos');
+            const contDest = document.getElementById('contenedor-destacados');
+            const secDest = document.getElementById('seccion-destacado');
+            cont.innerHTML = ''; contDest.innerHTML = '';
+            productos.forEach(p => {
+                const stock = p.stock && p.stock.toUpperCase() === 'SI';
+                const destacado = p.destacado && p.destacado.toUpperCase() !== 'NO';
+                const html = `<div class="tarjeta ${!stock ? 'sin-stock' : ''}">
+                    ${destacado ? `<span class="etiqueta-promo">${p.destacado}</span>` : ''}
+                    <img src="${obtenerLinkDirectoDrive(p.img)}">
+                    <h3>${p.nombre}</h3>
+                    <div style="font-weight:bold">$${Number(p.precio).toLocaleString('es-AR')}</div>
+                    <button onclick="agregarAlCarrito(${p.id})" ${!stock ? 'disabled' : ''}>Añadir</button>
+                    <button onclick="comprarDirecto(${p.id})" ${!stock ? 'disabled' : ''}>Comprar Ya</button>
+                </div>`;
+                if (destacado) { secDest.style.display = 'block'; contDest.innerHTML += html; }
+                else { cont.innerHTML += html; }
+            });
+        }
+
+        function toggleCarrito() { document.getElementById('carrito-lateral').classList.toggle('abierto'); }
+        function agregarAlCarrito(id) { const p = productos.find(x => String(x.id) === String(id)); if(p){ carrito.push(p); actualizarCarrito(); toggleCarrito(); } }
+        function actualizarCarrito() {
+            const cont = document.getElementById('items-carrito'); let total = 0;
+            cont.innerHTML = carrito.map(item => { total += Number(item.precio); return `<p>${item.nombre} - $${item.precio}</p>`; }).join('');
+            document.getElementById('precio-total').innerText = total.toLocaleString('es-AR');
+            document.getElementById('contador').innerText = carrito.length;
+        }
+        function comprarDirecto(id) { const p = productos.find(x => String(x.id) === String(id)); if(p){ compraTemporal = [p]; mostrarModal(p.precio); } }
+        function abrirModalPagoDesdeCarrito() { if(carrito.length===0)return; compraTemporal = [...carrito]; mostrarModal(carrito.reduce((a,b)=>a+Number(b.precio),0)); }
+        function mostrarModal(m) { document.getElementById('monto-final').innerText = m.toLocaleString('es-AR'); document.getElementById('modal-pago').classList.add('activo'); }
+        function cerrarModalPago() { document.getElementById('modal-pago').classList.remove('activo'); }
+        function enviarComprobanteWhatsApp() {
+            const total = compraTemporal.reduce((a,b)=>a+Number(b.precio),0);
+            const texto = `Hola Cecilia, envío comprobante por: ${compraTemporal.map(p=>p.nombre).join(', ')}. Total: $${total}`;
+            window.open(`https://wa.me/5492281310771?text=${encodeURIComponent(texto)}`, '_blank');
+            carrito = []; actualizarCarrito(); cerrarModalPago();
+        }
+        cargarDatosDesdeGoogle();
+    </script>
+</body>
+</html>
