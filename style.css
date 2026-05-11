@@ -60,7 +60,7 @@ header {
 
 /* Ajustes para el logo definitivo */
 .logo-tienda {
-    height: 90px; /* Aumentamos el tamaño */
+    height: 140px; /* Aumentamos el tamaño */
     width: auto; /* Mantiene la proporción para que no se deforme */
     object-fit: contain; /* Asegura que la imagen se vea perfecta */
     padding: 10px 0; /* Le da aire arriba y abajo para que no se vea apretado */
