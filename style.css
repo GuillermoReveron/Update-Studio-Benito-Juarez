@@ -14,10 +14,6 @@ header {
     border-bottom: 1px solid #ddd;
 }
 
-.logo {
-    height: 60px; /* Ajuste para el logo de UVA */
-    width: auto;
-}
 
 /* CONTENEDOR DE PRODUCTOS */
 #contenedor-productos {
