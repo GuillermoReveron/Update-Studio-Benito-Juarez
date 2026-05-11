@@ -54,9 +54,8 @@ header {
     background-color: #0056b3;
 }/* Ajustes para el logo definitivo */
 .logo-tienda {
-    height: 140px; /* Aumentamos el tamaño */
-    width: auto; /* Mantiene la proporción para que no se deforme */
-    object-fit: contain; /* Asegura que la imagen se vea perfecta */
-    padding: 10px 0; /* Le da aire arriba y abajo para que no se vea apretado */
-    vertical-align: middle; /* Lo centra con los textos del menú */
+    height: 80px; /* Un alto normal para que la barra de navegación no quede gigante */
+    width: auto;
+    object-fit: contain;
+    transform: scale(1.8); /* EL TRUCO: agranda visualmente el logo casi al doble */
 }
